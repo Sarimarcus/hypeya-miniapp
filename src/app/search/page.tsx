@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AdvancedSearch } from '@/components/search/AdvancedSearch';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q') || '';
@@ -13,4 +14,12 @@ export default function SearchPage() {
   };
   
   return <AdvancedSearch initialQuery={initialQuery} onClose={handleClose} />;
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Loading search...</div>}>
+      <SearchPageContent />
+    </Suspense>
+  );
 }

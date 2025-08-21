@@ -4,11 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:webpack": "next dev",
     "build": "next build --turbopack",
+    "build:webpack": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "analyze": "node scripts/analyze-bundle.js",
-    "build:analyze": "npm run build && npm run analyze"
+    "build:analyze": "npm run build:webpack && npm run analyze",
+    "build:analyze:webpack": "npm run build:webpack && npm run analyze",
+    "build:production": "NODE_ENV=production npm run build",
+    "test:build": "npm run build && npm run start",
+    "clean": "rm -rf .next && rm -rf out",
+    "analyze:bundle": "ANALYZE=true npm run build:webpack"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
@@ -22,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^14.2.32",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

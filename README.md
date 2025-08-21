@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Hypeya Mini‑App is a mobile‑first Next.js application that fetches and displays the latest articles from the Hypeya.xyz WordPress site. It includes advanced search and filtering (categories/tags), optimized mobile UX (gestures, haptics), and PWA support with offline fallback.
 
-## Getting Started
+## Features
 
-First, run the development server:
+- Latest articles with pagination and loading states
+- Advanced search with suggestions and real‑time filtering
+- Category and tag filters with shared filter state
+- Mobile UX: swipe gestures, pull‑to‑refresh (scaffolded), haptics
+- Optimized images via Next Image and lazy loading
+- Error boundaries, empty states, and performance monitoring
+- PWA manifest + service worker for offline fallback
+
+## Tech Stack
+
+- Framework: Next.js 15 (App Router), React 19, TypeScript
+- UI: Tailwind CSS 4, shadcn/ui, lucide-react
+- Data: WordPress REST API (`https://hypeya.xyz/wp-json/wp/v2`)
+
+## Quick Start
+
+Prerequisites: Node.js 18.18+ (recommended: 20 LTS) and npm.
+
+1) Install dependencies
+
+```bash
+npm install
+```
+
+2) Configure environment variables
+
+Create a `.env.local` from the example and fill values as needed:
+
+```bash
+cp .env.example .env.local
+```
+
+Environment variables:
+
+- `WP_API_USERNAME` and `WP_API_KEY` are optional for authenticated WordPress requests (Application Passwords). The app reads public content without them, but credentials can help avoid rate limits or access protected resources.
+- `NEXT_PUBLIC_API_DEBUG` enables extra client‑side logging.
+- `NEXT_PUBLIC_OFFLINE_MODE` simulates offline behavior in development.
+
+3) Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev`: Start dev server (Turbopack)
+- `npm run build`: Build production bundle (Turbopack)
+- `npm run start`: Start production server
+- `npm run lint`: Run ESLint
+- `npm run build:analyze`: Build then analyze bundle size
 
-## Learn More
+Bundle analysis uses `scripts/analyze-bundle.js` and prints page/chunk sizes and suggestions.
 
-To learn more about Next.js, take a look at the following resources:
+## Environment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app integrates with WordPress via `src/services/wordpress.ts` and `src/constants/api.ts`. Image remote patterns are configured in `next.config.ts` for WordPress/Gravatar domains.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+PWA assets live in `public/` (`manifest.json`, `sw.js`, icons). The layout registers the service worker via `src/components/ServiceWorkerInitializer.tsx`.
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Key directories under `src/`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/`: App Router pages (`page.tsx`, `layout.tsx`, error/offline pages)
+- `components/`: UI, common, articles, search, mobile, error boundaries
+- `hooks/`: Data fetching and filtering hooks (e.g., `useFilteredArticles`)
+- `services/`: WordPress API service and transformations
+- `types/`: Typed models for articles, categories, tags, API
+- `lib/` and `utils/`: Helpers (e.g., service worker, haptics, performance)
+
+See `architecture.md` for a deeper breakdown and `tasks.md` for implementation progress.
+
+## Notable Routes
+
+- `/`: Home (latest articles, filters, search)
+- `/search`: Search results page (query via `?q=`)
+- `/offline`: Offline fallback route
+
+## Development Notes
+
+- Accessibility: Work is in progress (see Phase 11 in `tasks.md`).
+- Mobile‑first: Verify layouts in responsive mode (375px–430px).
+- API limits: Public endpoints are used; credentials can reduce rate‑limit issues.
+
+## Troubleshooting
+
+- Empty article list: Ensure WordPress API is reachable from your network; check browser console for CORS/network errors.
+- Images not loading: Confirm domains in `next.config.ts > images.remotePatterns` match requested image hosts.
+- Bundle analysis requires a prior build: run `npm run build` then `npm run analyze`.
+
+## License
+
+This project is for internal use and evaluation. Do not commit real credentials. If publishing, add a proper license file.

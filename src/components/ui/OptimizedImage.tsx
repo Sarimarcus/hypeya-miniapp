@@ -3,7 +3,7 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useLazyLoading } from '@/utils/performance';
 import { cn } from '@/lib/utils';
@@ -52,15 +52,7 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [setRef, isVisible] = useLazyLoading(threshold);
-  const imageRef = useRef<HTMLDivElement>(null);
-
-  // Combine refs
-  useEffect(() => {
-    if (imageRef.current) {
-      setRef(imageRef.current);
-    }
-  }, [setRef]);
+  const { ref: lazyRef, isInView: isVisible } = useLazyLoading(threshold);
 
   const handleLoad = () => {
     setImageLoaded(true);
@@ -104,7 +96,7 @@ export function OptimizedImage({
 
   return (
     <div
-      ref={imageRef}
+      ref={lazyRef}
       className={cn(
         'relative overflow-hidden',
         fill && 'w-full h-full',

@@ -24,7 +24,7 @@ class HapticFeedbackManager {
   private checkSupport(): boolean {
     // Check for iOS Haptic Feedback API
     if (typeof window !== 'undefined') {
-      // @ts-ignore - Haptic API is not in TypeScript definitions
+      // @ts-expect-error - Haptic API is not in TypeScript definitions
       return 'DeviceMotionEvent' in window && window.DeviceMotionEvent?.requestPermission !== undefined;
     }
     return false;
@@ -34,7 +34,7 @@ class HapticFeedbackManager {
     if (!this.isSupported) return false;
 
     try {
-      // @ts-ignore - Haptic API is not in TypeScript definitions
+      // @ts-expect-error - Haptic API is not in TypeScript definitions
       const permission = await DeviceMotionEvent.requestPermission();
       return permission === 'granted';
     } catch (error) {
@@ -68,35 +68,35 @@ class HapticFeedbackManager {
     // Try iOS Haptic Feedback first
     if (this.isSupported) {
       try {
-        // @ts-ignore - Haptic API is not in TypeScript definitions
+        // @ts-expect-error - Haptic API is not in TypeScript definitions
         if (window.Haptics) {
           switch (type) {
             case 'impact-light':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.impact({ style: 'light' });
               break;
             case 'impact-medium':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.impact({ style: 'medium' });
               break;
             case 'impact-heavy':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.impact({ style: 'heavy' });
               break;
             case 'notification-success':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.notification({ type: 'success' });
               break;
             case 'notification-warning':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.notification({ type: 'warning' });
               break;
             case 'notification-error':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.notification({ type: 'error' });
               break;
             case 'selection':
-              // @ts-ignore
+              // @ts-expect-error - Haptic API is not in TypeScript definitions
               window.Haptics.selection();
               break;
           }

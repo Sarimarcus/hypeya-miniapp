@@ -1,25 +1,29 @@
-// Service Worker for offline functionality and caching
-// Provides offline access to previously viewed articles
+// Service Worker for HYPEYA Miniapp - Production Optimized
+// Handles caching, offline functionality, and performance optimization
 
-const CACHE_NAME = 'hypeya-app-v1';
-const STATIC_CACHE = 'hypeya-static-v1';
-const API_CACHE = 'hypeya-api-v1';
+const CACHE_NAME = 'hypeya-miniapp-v1.0.0';
+const STATIC_CACHE = 'hypeya-static-v1.0.0';
+const API_CACHE = 'hypeya-api-v1.0.0';
 
-// Assets to cache immediately
+// Assets to cache immediately (production optimized)
 const STATIC_ASSETS = [
   '/',
+  '/search',
   '/offline',
-  '/_next/static/css/app/layout.css',
-  '/_next/static/css/app/page.css',
+  '/images/hypeya-logo.png',
+  '/icon-192x192.png',
   '/manifest.json'
 ];
 
-// API routes to cache
-const API_ROUTES = [
-  '/api/articles',
-  '/api/categories',
-  '/api/tags'
+// WordPress API patterns to cache (for future API pattern matching)
+const API_CACHE_PATTERNS = [
+  /^https:\/\/hypeya\.xyz\/wp-json\/wp\/v2\//,
 ];
+
+// Helper function to check if URL matches API patterns
+function isApiRequest(url) {
+  return API_CACHE_PATTERNS.some(pattern => pattern.test(url));
+}
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
@@ -31,7 +35,7 @@ self.addEventListener('install', (event) => {
         console.log('[SW] Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       }),
-      caches.open(API_CACHE).then(cache => {
+      caches.open(API_CACHE).then(() => {
         console.log('[SW] Initializing API cache');
         return Promise.resolve();
       })
@@ -77,7 +81,7 @@ self.addEventListener('fetch', (event) => {
   if (url.protocol === 'chrome-extension:') return;
   
   // Different strategies for different types of requests
-  if (url.pathname.startsWith('/api/')) {
+  if (url.pathname.startsWith('/api/') || isApiRequest(request.url)) {
     event.respondWith(handleApiRequest(request));
   } else if (url.pathname.startsWith('/_next/static/')) {
     event.respondWith(handleStaticAssets(request));
@@ -177,7 +181,7 @@ async function handleImages(request) {
     }
     
     return response;
-  } catch (error) {
+  } catch {
     // Return a placeholder image for offline
     return new Response(
       '',
@@ -205,13 +209,13 @@ async function handlePageRequest(request) {
   // Return cached version if available, otherwise wait for network
   if (cached) {
     console.log('[SW] Serving page from cache:', request.url);
-    fetchPromise; // Update cache in background
+    void fetchPromise; // Update cache in background
     return cached;
   }
   
   try {
     return await fetchPromise;
-  } catch (error) {
+  } catch {
     // Return offline page
     const offlineResponse = await cache.match('/offline');
     return offlineResponse || new Response(

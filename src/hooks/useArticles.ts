@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Article } from '@/types/article';
 import { Category } from '@/types/category';
 import { Tag } from '@/types/tag';
-import { ApiResponse, LoadingState } from '@/types/api';
+import { LoadingState } from '@/types/api';
 import { WordPressApiService } from '@/services/wordpress';
 
 // Article hook with pagination

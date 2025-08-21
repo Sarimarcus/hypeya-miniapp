@@ -16,25 +16,25 @@ class BundleAnalyzer {
   async analyze() {
     console.log('🔍 Analyzing bundle size...\n');
 
-    try {
-      await this.analyzeBuildManifest();
-      await this.analyzeStaticFiles();
-      await this.analyzePages();
-      
-      this.generateReport();
-      this.generateRecommendations();
-      
-    } catch (error) {
-      console.error('❌ Analysis failed:', error.message);
-      process.exit(1);
-    }
+    // Turbopack (Next 15) may not produce build-manifest.json.
+    // Degrade gracefully and analyze what we can.
+    await this.analyzeBuildManifest().catch((err) => {
+      console.warn('⚠️  build-manifest not found or unreadable:', err.message);
+      console.warn('   Tip: For detailed analysis, run webpack build (remove --turbopack) or use @next/bundle-analyzer.\n');
+    });
+
+    await this.analyzeStaticFiles();
+    await this.analyzePages();
+    
+    this.generateReport();
+    this.generateRecommendations();
   }
 
   async analyzeBuildManifest() {
     const manifestPath = path.join(this.buildDir, 'build-manifest.json');
     
     if (!fs.existsSync(manifestPath)) {
-      throw new Error('Build manifest not found. Run `npm run build` first.');
+      throw new Error('build-manifest.json missing (likely Turbopack build)');
     }
 
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -52,7 +52,9 @@ class BundleAnalyzer {
     const details = [];
 
     for (const file of files) {
-      const filePath = path.join(this.buildDir, 'static', file);
+      const filePath = file.startsWith('static/')
+        ? path.join(this.buildDir, file)
+        : path.join(this.buildDir, 'static', file);
       
       if (fs.existsSync(filePath)) {
         const content = fs.readFileSync(filePath);

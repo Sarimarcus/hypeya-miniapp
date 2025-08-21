@@ -6,9 +6,6 @@ export * from './common/LoadingSpinner';
 export * from './common/ErrorMessage';
 export * from './common/OptimizedImage';
 
-// Layout components  
-export * from './layout/Header';
-
 // Article components
 export * from './articles/ArticleCard';
 
