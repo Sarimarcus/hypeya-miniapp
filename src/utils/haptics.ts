@@ -18,7 +18,7 @@ class HapticFeedbackManager {
 
   constructor() {
     this.isSupported = this.checkSupport();
-    this.vibrationSupported = 'vibrate' in navigator;
+    this.vibrationSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
   }
 
   private checkSupport(): boolean {
@@ -108,7 +108,7 @@ class HapticFeedbackManager {
     }
 
     // Fallback to vibration API
-    if (this.vibrationSupported) {
+    if (this.vibrationSupported && typeof navigator !== 'undefined') {
       const pattern = this.getVibrationPattern(type);
       navigator.vibrate(pattern);
     }
@@ -130,31 +130,55 @@ class HapticFeedbackManager {
   selection = () => this.triggerHaptic('selection');
 }
 
-// Singleton instance
-export const haptics = new HapticFeedbackManager();
+// Singleton instance - lazy initialization to avoid SSR issues
+let hapticsInstance: HapticFeedbackManager | null = null;
+
+function getHapticsInstance(): HapticFeedbackManager {
+  if (!hapticsInstance) {
+    hapticsInstance = new HapticFeedbackManager();
+  }
+  return hapticsInstance;
+}
 
 // React hook for haptic feedback
 export function useHaptics() {
   const triggerHaptic = (type: HapticFeedbackType = 'impact-light') => {
-    haptics.triggerHaptic(type);
+    if (typeof window !== 'undefined') {
+      getHapticsInstance().triggerHaptic(type);
+    }
   };
 
   const requestPermission = async () => {
-    return await haptics.requestPermission();
+    if (typeof window !== 'undefined') {
+      return await getHapticsInstance().requestPermission();
+    }
+    return false;
   };
+
+  const haptics = typeof window !== 'undefined' ? getHapticsInstance() : null;
 
   return {
     triggerHaptic,
     requestPermission,
-    impact: haptics.impact,
-    notification: haptics.notification,
-    selection: haptics.selection,
-    isSupported: haptics['isSupported'],
-    vibrationSupported: haptics['vibrationSupported']
+    impact: {
+      light: () => triggerHaptic('impact-light'),
+      medium: () => triggerHaptic('impact-medium'),
+      heavy: () => triggerHaptic('impact-heavy')
+    },
+    notification: {
+      success: () => triggerHaptic('notification-success'),
+      warning: () => triggerHaptic('notification-warning'),
+      error: () => triggerHaptic('notification-error')
+    },
+    selection: () => triggerHaptic('selection'),
+    isSupported: haptics?.['isSupported'] ?? false,
+    vibrationSupported: haptics?.['vibrationSupported'] ?? false
   };
 }
 
 // Utility function for manual haptic triggers
 export function triggerHapticFeedback(type: HapticFeedbackType = 'impact-light') {
-  haptics.triggerHaptic(type);
+  if (typeof window !== 'undefined') {
+    getHapticsInstance().triggerHaptic(type);
+  }
 }

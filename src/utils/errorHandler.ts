@@ -71,8 +71,8 @@ class ErrorHandler {
       message: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      url: window.location.href,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+      url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
       sessionId: this.sessionId,
     };
 
