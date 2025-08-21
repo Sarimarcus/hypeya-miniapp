@@ -39,8 +39,22 @@ export function ArticleCard({
       onClick();
     } else {
       // Default behavior: open article in new tab using WordPress link or fallback
-      const articleUrl = article.link || `https://hypeya.xyz/${article.slug}/`;
-      window.open(articleUrl, '_blank', 'noopener,noreferrer');
+      const baseUrl = article.link || `https://hypeya.xyz/${article.slug}/`;
+      // Append UTM parameters for Google Analytics attribution
+      const trackedUrl = (() => {
+        try {
+          const url = new URL(baseUrl);
+          // Standard UTM parameters
+          url.searchParams.set('utm_source', 'base-miniapp');
+          url.searchParams.set('utm_medium', 'referral');
+          url.searchParams.set('utm_campaign', 'miniapp');
+          url.searchParams.set('utm_content', article.slug);
+          return url.toString();
+        } catch {
+          return baseUrl; // Fallback if URL parsing fails
+        }
+      })();
+      window.open(trackedUrl, '_blank', 'noopener,noreferrer');
     }
   };
 

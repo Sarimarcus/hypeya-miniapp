@@ -20,7 +20,13 @@ Framework: Next.js
 Build Command: npm run build
 Output Directory: .next
 Install Command: npm install
+Node.js Version: 20.x
 ```
+
+**Note**: Current configuration optimized for Vercel Free Plan:
+- Single region deployment (automatic region selection)
+- 10s function timeout (increased to 30s on Pro plan)
+- Serverless functions supported
 
 ### 3. **Environment Variables**
 Add these in Vercel Project Settings > Environment Variables:
@@ -161,8 +167,8 @@ After deployment, monitor:
 
 ## 🎯 Production URLs
 
-- **Production**: `https://hypeya-miniapp.vercel.app`
-- **Custom Domain**: TBD
+- **Production**: `https://hypeya-miniapp-eum1029vz-sarimarcus-projects.vercel.app`
+- **Vercel Dashboard**: `https://vercel.com/sarimarcus-projects/hypeya-miniapp`
 - **WordPress API**: `https://hypeya.xyz/wp-json/wp/v2/`
 
 ## 📞 Support
