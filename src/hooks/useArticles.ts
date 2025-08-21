@@ -309,7 +309,7 @@ export function useSearch() {
     setQuery(searchQuery);
 
     try {
-      // Get all articles and filter client-side
+      // Get more articles to ensure we have enough matches, but limit final results
       const allArticlesResponse = await apiService.getLatestArticles(1, 100);
       
       if (allArticlesResponse.success) {
@@ -319,7 +319,8 @@ export function useSearch() {
           article.content.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-        setResults(filteredArticles);
+        // Limit search results to 20 articles
+        setResults(filteredArticles.slice(0, 20));
       } else {
         setLoading({ loading: false, error: allArticlesResponse.message || 'Search failed' });
       }
@@ -346,5 +347,117 @@ export function useSearch() {
     query,
     search,
     clearSearch
+  };
+}
+
+// Filtered articles hook - makes API calls with filter parameters
+export function useFilteredArticles(
+  filters: {
+    categories?: number[];
+    tags?: number[];
+    search?: string;
+  },
+  initialPage: number = 1, 
+  perPage: number = 10
+) {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [pagination, setPagination] = useState({
+    currentPage: initialPage,
+    hasMore: true,
+    total: 0
+  });
+
+  const apiService = useMemo(() => new WordPressApiService(), []);
+
+  // Check if any filters are active
+  const hasActiveFilters = useMemo(() => {
+    return (filters.categories && filters.categories.length > 0) ||
+           (filters.tags && filters.tags.length > 0) ||
+           (filters.search && filters.search.trim().length > 0);
+  }, [filters]);
+
+  const fetchFilteredArticles = useCallback(async (page: number = 1, reset: boolean = false) => {
+    // If no filters are active, use the regular getLatestArticles method
+    if (!hasActiveFilters) {
+      setLoading({ loading: true, error: null });
+
+      try {
+        const response = await apiService.getLatestArticles(page, perPage);
+        
+        if (response.success) {
+          setArticles(prev => reset ? response.data : [...prev, ...response.data]);
+          setPagination({
+            currentPage: page,
+            hasMore: response.data.length === perPage,
+            total: response.pagination?.totalItems || response.data.length
+          });
+        } else {
+          setLoading({ loading: false, error: response.message || 'Failed to load articles' });
+        }
+      } catch (error) {
+        setLoading({ 
+          loading: false, 
+          error: error instanceof Error ? error.message : 'An error occurred' 
+        });
+      } finally {
+        setLoading(prev => ({ ...prev, loading: false }));
+      }
+      return;
+    }
+
+    // Use filtered API call when filters are active
+    setLoading({ loading: true, error: null });
+
+    try {
+      const response = await apiService.getFilteredArticles(filters, page, perPage);
+      
+      if (response.success) {
+        setArticles(prev => reset ? response.data : [...prev, ...response.data]);
+        setPagination({
+          currentPage: page,
+          hasMore: response.data.length === perPage,
+          total: response.pagination?.totalItems || response.data.length
+        });
+      } else {
+        setLoading({ loading: false, error: response.message || 'Failed to load filtered articles' });
+      }
+    } catch (error) {
+      setLoading({ 
+        loading: false, 
+        error: error instanceof Error ? error.message : 'An error occurred' 
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, loading: false }));
+    }
+  }, [apiService, perPage, filters, hasActiveFilters]);
+
+  const loadMore = useCallback(() => {
+    if (!loading.loading && pagination.hasMore) {
+      fetchFilteredArticles(pagination.currentPage + 1, false);
+    }
+  }, [fetchFilteredArticles, loading.loading, pagination]);
+
+  const refresh = useCallback(() => {
+    fetchFilteredArticles(1, true);
+  }, [fetchFilteredArticles]);
+
+  // Fetch articles when filters change with a small delay to prevent rapid re-renders
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchFilteredArticles(1, true);
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchFilteredArticles]);
+
+  return {
+    articles,
+    loading: loading.loading,
+    error: loading.error,
+    pagination,
+    loadMore,
+    refresh,
+    hasActiveFilters
   };
 }

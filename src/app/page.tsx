@@ -1,28 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Header } from '@/components/layout/Header';
+import Image from 'next/image';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { SearchBar, Filters, AdvancedSearch } from '@/components/search';
-import { useArticles, useCategories } from '@/hooks';
+import { SearchBar, Filters } from '@/components/search';
+import { useFilteredArticles, useCategories } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PerformanceMonitor } from '@/components/debug/PerformanceMonitor';
 import { Swipeable } from '@/components/mobile/Swipeable';
 import { useHaptics } from '@/utils/haptics';
 
 export default function HomePage() {
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     categories: [] as number[],
-    tags: [] as number[]
+    tags: [] as number[],
+    search: '' as string
   });
-  
+
   const router = useRouter();
-  const { articles, loading, error, loadMore, pagination } = useArticles(1, 6);
+
+  // Memoize the filters object to prevent unnecessary re-renders
+  const memoizedFilters = useMemo(() => ({
+    categories: filters.categories,
+    tags: filters.tags,
+    search: filters.search,
+  }), [filters.categories, filters.tags, filters.search]);
+
+  const { articles, loading, error, loadMore, pagination, hasActiveFilters } = useFilteredArticles(
+    memoizedFilters,
+    1,
+    6
+  );
   const { categories, loading: categoriesLoading } = useCategories();
   const { triggerHaptic } = useHaptics();
 
@@ -45,80 +56,67 @@ export default function HomePage() {
     console.log('Swiped right - previous page');
   };
 
-  // Filter articles based on selected filters
-  const filteredArticles = articles.filter(article => {
-    // Category filter
-    if (filters.categories.length > 0) {
-      const hasMatchingCategory = article.categories.some(cat => 
-        filters.categories.includes(cat.id)
-      );
-      if (!hasMatchingCategory) return false;
-    }
-
-    // Tag filter
-    if (filters.tags.length > 0) {
-      const hasMatchingTag = article.tags.some(tag => 
-        filters.tags.includes(tag.id)
-      );
-      if (!hasMatchingTag) return false;
-    }
-
-    return true;
-  });
-
-  const hasActiveFilters = filters.categories.length > 0 || filters.tags.length > 0;
+  const handleFiltersChange = (newFilters: { categories: number[]; tags: number[] }) => {
+    setFilters(prev => ({
+      ...prev,
+      categories: newFilters.categories,
+      tags: newFilters.tags
+    }));
+  };
 
   const handleAdvancedSearch = (query: string) => {
     router.push(`/search?q=${encodeURIComponent(query)}`);
   };
 
-  if (showAdvancedSearch) {
-    return (
-      <AdvancedSearch 
-        onClose={() => setShowAdvancedSearch(false)}
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        showSearchButton
-        onSearch={() => setShowAdvancedSearch(true)}
-      />
-      
       {/* <PullToRefresh onRefresh={handleRefresh}> */}
         <Swipeable
           onSwipeLeft={handleSwipeLeft}
           onSwipeRight={handleSwipeRight}
           threshold={100}
         >
-          <main className="container mx-auto px-4 py-8">
+          <main id="main-content" className="container mx-auto px-4 py-8">
         {/* Hero Section with Search */}
         <section className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Welcome to Hypeya
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/images/hypeya-logo.png"
+              alt="HYPEYA Logo"
+              width={200}
+              height={80}
+              className="h-16 md:h-20 w-auto"
+              priority
+            />
+          </div>
+          <p className="text-xl font-content text-gray-600 max-w-2xl mx-auto mb-6">
             Discover the latest articles, insights, and stories from our community
           </p>
-          
+
           {/* Prominent Search Bar */}
           <div className="max-w-md mx-auto mb-4">
-            <SearchBar 
+            <SearchBar
               onAdvancedSearch={handleAdvancedSearch}
               placeholder="Search articles..."
             />
           </div>
-          
+
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className="mb-4"
+            className="mb-4 border-hypeya-600 text-hypeya-600 hover:bg-hypeya-50"
+            aria-expanded={showFilters}
+            aria-controls="filters-section"
+            aria-label={`${showFilters ? 'Hide' : 'Show'} article filters`}
           >
             {showFilters ? 'Hide Filters' : 'Show Filters'}
             {hasActiveFilters && (
-              <Badge variant="secondary" className="ml-2">
+              <Badge 
+                variant="default" 
+                className="ml-2 text-white" 
+                style={{ backgroundColor: '#6a40f2' }}
+                aria-label={`${filters.categories.length + filters.tags.length} active filters`}
+              >
                 {filters.categories.length + filters.tags.length}
               </Badge>
             )}
@@ -127,10 +125,10 @@ export default function HomePage() {
 
         {/* Filters Panel */}
         {showFilters && (
-          <section className="mb-8">
+          <section id="filters-section" className="mb-8" aria-label="Article filtering options">
             <Filters
               filters={filters}
-              onFiltersChange={setFilters}
+              onFiltersChange={handleFiltersChange}
               compact
             />
           </section>
@@ -139,22 +137,36 @@ export default function HomePage() {
         {/* Categories Section */}
         {!categoriesLoading && categories.length > 0 && !hasActiveFilters && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
-            <div className="flex flex-wrap gap-2">
+            <h2 className="text-2xl font-title font-bold text-gray-900 mb-6">Browse by Category</h2>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Category quick filters">
               {categories.slice(0, 8).map((category) => (
-                <Badge 
-                  key={category.id} 
-                  variant="secondary"
-                  className="cursor-pointer hover:bg-gray-200 transition-colors"
-                  style={{ backgroundColor: category.color + '20', color: category.color }}
+                <Badge
+                  key={category.id}
+                  variant="default"
+                  className="cursor-pointer transition-colors text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                  style={{ backgroundColor: '#6a40f2' }}
                   onClick={() => setFilters(prev => ({
                     ...prev,
-                    categories: prev.categories.includes(category.id) 
+                    categories: prev.categories.includes(category.id)
                       ? prev.categories.filter(id => id !== category.id)
                       : [...prev.categories, category.id]
                   }))}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Filter by ${category.name} category (${category.count} articles)`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setFilters(prev => ({
+                        ...prev,
+                        categories: prev.categories.includes(category.id)
+                          ? prev.categories.filter(id => id !== category.id)
+                          : [...prev.categories, category.id]
+                      }));
+                    }
+                  }}
                 >
-                  {category.name} ({category.count})
+                  {category.name} <span aria-hidden="true">({category.count})</span>
                 </Badge>
               ))}
             </div>
@@ -164,43 +176,44 @@ export default function HomePage() {
         {/* Articles Section */}
         <section>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-title font-bold text-gray-900">
               {hasActiveFilters ? 'Filtered Articles' : 'Latest Articles'}
             </h2>
             {hasActiveFilters && (
-              <p className="text-gray-600">
-                {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''}
+              <p className="text-gray-600" role="status" aria-live="polite">
+                {articles.length} article{articles.length !== 1 ? 's' : ''}
               </p>
             )}
           </div>
-          
+
           {error && (
-            <div className="text-center text-red-500 mb-4">
+            <div className="text-center text-red-500 mb-4" role="alert" aria-live="assertive">
               {error}
             </div>
           )}
 
           {loading && articles.length === 0 && (
-            <div className="flex justify-center py-12">
-              <LoadingSpinner size="lg" />
+            <div className="flex justify-center py-12" role="status" aria-live="polite">
+              <LoadingSpinner size="lg" text="Loading articles..." />
             </div>
           )}
 
-          {(hasActiveFilters ? filteredArticles : articles).length > 0 && (
+          {articles.length > 0 && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {(hasActiveFilters ? filteredArticles : articles).map((article) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="feed" aria-label="Articles list">
+                {articles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
               </div>
 
-              {pagination.hasMore && !hasActiveFilters && (
+              {pagination.hasMore && (
                 <div className="text-center">
-                  <Button 
-                    onClick={loadMore} 
+                  <Button
+                    onClick={loadMore}
                     disabled={loading}
                     variant="outline"
                     size="lg"
+                    aria-label={loading ? 'Loading more articles...' : 'Load more articles'}
                   >
                     {loading ? (
                       <>
@@ -216,15 +229,16 @@ export default function HomePage() {
             </>
           )}
 
-          {!loading && !error && (hasActiveFilters ? filteredArticles : articles).length === 0 && (
-            <div className="text-center py-12">
+          {!loading && !error && articles.length === 0 && (
+            <div className="text-center py-12" role="status" aria-live="polite">
               <p className="text-gray-500 mb-2">
                 {hasActiveFilters ? 'No articles match your filters' : 'No articles found. Check back later!'}
               </p>
               {hasActiveFilters && (
                 <Button
                   variant="outline"
-                  onClick={() => setFilters({ categories: [], tags: [] })}
+                  onClick={() => setFilters({ categories: [], tags: [], search: '' })}
+                  aria-label="Clear all filters to show all articles"
                 >
                   Clear Filters
                 </Button>
@@ -233,9 +247,7 @@ export default function HomePage() {
           )}
         </section>
       </main>
-      
-      {/* Performance Monitor for development */}
-      <PerformanceMonitor />
+
       </Swipeable>
       {/* </PullToRefresh> */}
     </div>

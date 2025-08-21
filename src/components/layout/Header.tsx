@@ -77,10 +77,10 @@ export function Header({
         <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-2">
             {/* Logo placeholder - you can replace with actual logo */}
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">H</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-hypeya-500 to-hypeya-700 rounded-lg flex items-center justify-center">
+              <span className="text-white font-title font-bold text-sm">H</span>
             </div>
-            <h1 className="text-lg font-bold text-gray-900 truncate max-w-[200px]">
+            <h1 className="text-lg font-title font-bold text-gray-900 truncate max-w-[200px]">
               {title}
             </h1>
           </div>
@@ -93,7 +93,7 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={onSearch}
-              className="p-2"
+              className="p-2 text-hypeya-600 hover:bg-hypeya-50"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />

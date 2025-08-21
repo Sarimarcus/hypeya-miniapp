@@ -210,24 +210,71 @@ export function useServiceWorker() {
   };
 }
 
-// Utility to check if app is running offline
+// Utility to check if app is running offline with better detection
 export function useOnlineStatus() {
   const [isOnline, setIsOnline] = React.useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
 
+  // Function to actually test network connectivity
+  const checkOnlineStatus = React.useCallback(async () => {
+    if (typeof navigator === 'undefined') return true;
+    
+    try {
+      // First check navigator.onLine
+      if (!navigator.onLine) {
+        setIsOnline(false);
+        return false;
+      }
+
+      // Then do an actual network test by trying to fetch a small resource
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      
+      const response = await fetch('/favicon.ico', {
+        method: 'HEAD',
+        cache: 'no-cache',
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      const online = response.ok;
+      setIsOnline(online);
+      return online;
+    } catch {
+      // If fetch fails, we're likely offline
+      setIsOnline(false);
+      return false;
+    }
+  }, []);
+
   React.useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
+    const handleOnline = () => {
+      // Don't immediately trust the online event, verify with actual network test
+      checkOnlineStatus();
+    };
+    
     const handleOffline = () => setIsOnline(false);
+
+    // Initial check
+    checkOnlineStatus();
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
+    // Periodic connectivity check (every 30 seconds when online)
+    const intervalId = setInterval(() => {
+      if (navigator.onLine) {
+        checkOnlineStatus();
+      }
+    }, 30000);
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      clearInterval(intervalId);
     };
-  }, []);
+  }, [checkOnlineStatus]);
 
   return isOnline;
 }

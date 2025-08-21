@@ -59,11 +59,12 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
     setSearchTimeout(timeout);
   }, [search, clearSearch, searchTimeout]);
 
+  // Auto-search when component mounts with initial query
   useEffect(() => {
-    if (initialQuery) {
-      handleSearch(initialQuery);
+    if (initialQuery.trim()) {
+      search(initialQuery);
     }
-  }, [initialQuery, handleSearch]);
+  }, [initialQuery, search]);
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
@@ -314,6 +315,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
                 {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''} 
                 {query && ` for "${query}"`}
                 {hasActiveFilters && ' (filtered)'}
+                {filteredResults.length === 20 && ' (showing first 20 results)'}
               </p>
             </div>
 

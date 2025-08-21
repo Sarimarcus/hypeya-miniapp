@@ -36,6 +36,7 @@ export interface Article {
   categories: Category[];
   tags: Tag[];
   featuredImage?: Image;
+  link?: string; // Direct URL to the article on WordPress
   readTime?: number; // Estimated reading time in minutes
   isSticky?: boolean;
 }

@@ -152,6 +152,7 @@ export class WordPressApiService {
       excerpt: wpArticle.excerpt.rendered,
       publishedAt: new Date(wpArticle.date),
       updatedAt: new Date(wpArticle.modified),
+      link: wpArticle.link, // Direct WordPress article URL
       author: {
         id: wpArticle.author,
         name: wpArticle._embedded?.author?.[0]?.name || 'Hypeya Team',
@@ -490,6 +491,122 @@ export class WordPressApiService {
 
       const wpArticles: WordPressArticle[] = await response.json();
       const articles = wpArticles.map(wp => this.transformArticle(wp));
+      const pagination = this.extractPaginationInfo(response);
+
+      return {
+        data: articles,
+        success: true,
+        pagination,
+      };
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  /**
+   * Get articles with multiple filter parameters
+   */
+  async getFilteredArticles(
+    filters: {
+      categories?: number[];
+      tags?: number[];
+      search?: string;
+    },
+    page = 1, 
+    perPage = 12
+  ): Promise<ApiResponse<Article[]>> {
+    try {
+      const params = new URLSearchParams();
+      
+      // Add pagination
+      params.append('per_page', perPage.toString());
+      params.append('page', page.toString());
+      
+      // Add category filter
+      if (filters.categories && filters.categories.length > 0) {
+        params.append('categories', filters.categories.join(','));
+      }
+      
+      // Add tag filter
+      if (filters.tags && filters.tags.length > 0) {
+        params.append('tags', filters.tags.join(','));
+      }
+      
+      // Add search query
+      if (filters.search && filters.search.trim()) {
+        params.append('search', filters.search.trim());
+      }
+      
+      // Add embedded data
+      params.append('_embed', 'true');
+      
+      // Order by date
+      params.append('orderby', 'date');
+      params.append('order', 'desc');
+
+      const url = `${this.baseUrl}/posts?${params.toString()}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const wpArticles: WordPressArticle[] = await response.json();
+      
+      // Transform articles and enrich with additional data if needed
+      const articles: Article[] = [];
+      
+      for (const wpArticle of wpArticles) {
+        const baseArticle = this.transformArticle(wpArticle);
+        const article = { ...baseArticle };
+        
+        // If no embedded author data, fetch author separately
+        if (!wpArticle._embedded?.author?.[0] && wpArticle.author) {
+          try {
+            const authorResponse = await fetch(`${API_CONFIG.BASE_URL}/users/${wpArticle.author}`);
+            if (authorResponse.ok) {
+              const authorData = await authorResponse.json();
+              article.author = {
+                id: authorData.id,
+                name: authorData.name || 'Hypeya Team',
+                slug: authorData.slug || 'hypeya-team',
+                description: authorData.description || '',
+                avatarUrl: authorData.avatar_urls?.['96'] || '/images/default-avatar.svg',
+              };
+            }
+          } catch (error) {
+            console.warn('Failed to fetch author data:', error);
+          }
+        }
+        
+        // If no embedded featured media, fetch media separately
+        if (!wpArticle._embedded?.['wp:featuredmedia']?.[0] && wpArticle.featured_media) {
+          try {
+            const mediaResponse = await fetch(`${API_CONFIG.BASE_URL}/media/${wpArticle.featured_media}`);
+            if (mediaResponse.ok) {
+              const mediaData = await mediaResponse.json();
+              article.featuredImage = {
+                id: mediaData.id,
+                url: mediaData.source_url,
+                alt: mediaData.alt_text || '',
+                width: mediaData.media_details?.width || 800,
+                height: mediaData.media_details?.height || 400,
+                sizes: {
+                  thumbnail: mediaData.media_details?.sizes?.thumbnail?.source_url || mediaData.source_url,
+                  medium: mediaData.media_details?.sizes?.medium?.source_url || mediaData.source_url,
+                  large: mediaData.media_details?.sizes?.large?.source_url || mediaData.source_url,
+                  full: mediaData.source_url,
+                },
+              };
+            }
+          } catch (error) {
+            console.warn('Failed to fetch media data:', error);
+          }
+        }
+        
+        articles.push(article);
+      }
+
       const pagination = this.extractPaginationInfo(response);
 
       return {

@@ -33,6 +33,17 @@ export function ArticleCard({
     return <ArticleCardSkeleton variant={variant} className={className} />;
   }
 
+  // Handle opening article in new tab
+  const handleArticleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      // Default behavior: open article in new tab using WordPress link or fallback
+      const articleUrl = article.link || `https://hypeya.xyz/${article.slug}/`;
+      window.open(articleUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const cardClasses = {
     default: 'p-4',
     compact: 'p-3',
@@ -73,10 +84,18 @@ export function ArticleCard({
     <Card 
       className={cn(
         'cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
-        'border border-gray-200 bg-white',
-        className
+        'border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-hypeya-500 focus:ring-offset-2'
       )}
-      onClick={onClick}
+      onClick={handleArticleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleArticleClick();
+        }
+      }}
+      tabIndex={0}
+      role="article"
+      aria-label={`Read article: ${article.title}`}
     >
       <CardContent className={cardClasses[variant]}>
         {/* Featured Image */}
@@ -86,6 +105,7 @@ export function ArticleCard({
               image={article.featuredImage}
               className="transition-transform duration-300 hover:scale-105"
               size="large"
+              aria-hidden="true"
             />
           </div>
         )}
@@ -94,47 +114,54 @@ export function ArticleCard({
         {showCategory && article.categories.length > 0 && (
           <div className="mb-2">
             <Badge 
-              variant="secondary" 
-              className="text-xs"
-              style={{ backgroundColor: article.categories[0].color + '20', color: article.categories[0].color }}
+              variant="default" 
+              className="text-xs text-white"
+              style={{ backgroundColor: '#6a40f2' }}
+              aria-label={`Category: ${article.categories[0].name}`}
             >
-              <Tag className="w-3 h-3 mr-1" />
+              <Tag className="w-3 h-3 mr-1" aria-hidden="true" />
               {article.categories[0].name}
             </Badge>
           </div>
         )}
 
         {/* Title */}
-        <h3 className={cn(titleClasses[variant], 'mb-2 text-gray-900')}>
+        <h3 className={cn(titleClasses[variant], 'mb-2 text-gray-900 font-title')} id={`article-title-${article.id}`}>
           {article.title}
         </h3>
 
         {/* Excerpt */}
         {article.excerpt && (
-          <p className={cn(excerptClasses[variant], 'mb-3')}>
+          <p className={cn(excerptClasses[variant], 'mb-3 font-content')} aria-describedby={`article-title-${article.id}`}>
             {stripHtml(article.excerpt)}
           </p>
         )}
 
         {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500" role="group" aria-label="Article metadata">
           {/* Published Date */}
           <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            <span>{formatDate(article.publishedAt)}</span>
+            <Calendar className="w-3 h-3" aria-hidden="true" />
+            <time dateTime={article.publishedAt.toISOString()} aria-label={`Published on ${formatDate(article.publishedAt)}`}>
+              {formatDate(article.publishedAt)}
+            </time>
           </div>
 
           {/* Reading Time (estimated) */}
           <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>{Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} min read</span>
+            <Clock className="w-3 h-3" aria-hidden="true" />
+            <span aria-label={`Estimated reading time: ${Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} minutes`}>
+              {Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} min read
+            </span>
           </div>
 
           {/* Author */}
           {showAuthor && article.author && (
             <div className="flex items-center gap-1">
-              <User className="w-3 h-3" />
-              <span>{article.author.name || 'Hypeya Team'}</span>
+              <User className="w-3 h-3" aria-hidden="true" />
+              <span aria-label={`Author: ${article.author.name || 'Hypeya Team'}`}>
+                {article.author.name || 'Hypeya Team'}
+              </span>
             </div>
           )}
         </div>

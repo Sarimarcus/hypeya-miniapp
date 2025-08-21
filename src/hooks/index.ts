@@ -7,5 +7,6 @@ export {
   useTags, 
   useArticlesByCategory, 
   useArticle, 
-  useSearch 
+  useSearch,
+  useFilteredArticles
 } from './useArticles';

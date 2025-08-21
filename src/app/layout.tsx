@@ -36,6 +36,14 @@ export default function RootLayout({
       <body
         className={`${fredoka.variable} ${inter.variable} antialiased`}
       >
+        {/* Skip Navigation Link */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-hypeya-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
+        
         <ErrorBoundary>
           {children}
           <ServiceWorkerInitializer />

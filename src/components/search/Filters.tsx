@@ -92,14 +92,19 @@ export function Filters({
     : tags.slice(0, 12);
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-4", className)} role="region" aria-label="Article filters">
       {/* Filter Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Filter className="h-5 w-5 text-gray-600" />
+          <Filter className="h-5 w-5 text-gray-600" aria-hidden="true" />
           <h3 className="font-medium text-gray-900">Filters</h3>
           {hasActiveFilters && (
-            <Badge variant="secondary" className="text-xs">
+            <Badge 
+              variant="default" 
+              className="text-xs text-white" 
+              style={{ backgroundColor: '#6a40f2' }}
+              aria-label={`${filters.categories.length + filters.tags.length} active filters`}
+            >
               {filters.categories.length + filters.tags.length}
             </Badge>
           )}
@@ -111,6 +116,7 @@ export function Filters({
             size="sm"
             onClick={clearAllFilters}
             className="text-gray-500 hover:text-gray-700"
+            aria-label="Clear all filters"
           >
             Clear all
           </Button>
@@ -119,13 +125,13 @@ export function Filters({
 
       {/* Active Filters Summary */}
       {hasActiveFilters && compact && (
-        <div className="space-y-2">
+        <div className="space-y-2" role="status" aria-label="Active filters summary">
           {filters.categories.length > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-1">Categories:</p>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1" role="list" aria-label="Selected categories">
                 {getSelectedCategoryNames().map((name, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
+                  <Badge key={index} variant="secondary" className="text-xs" role="listitem">
                     {name}
                   </Badge>
                 ))}
@@ -136,9 +142,9 @@ export function Filters({
           {filters.tags.length > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-1">Tags:</p>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1" role="list" aria-label="Selected tags">
                 {getSelectedTagNames().map((name, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
+                  <Badge key={index} variant="outline" className="text-xs" role="listitem">
                     {name}
                   </Badge>
                 ))}
@@ -152,32 +158,46 @@ export function Filters({
       <Card className="p-4">
         <button
           onClick={() => setShowCategories(!showCategories)}
-          className="flex items-center justify-between w-full text-left"
+          className="flex items-center justify-between w-full text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none rounded p-2 -m-2"
+          aria-expanded={showCategories}
+          aria-controls="categories-content"
+          aria-label={`${showCategories ? 'Hide' : 'Show'} categories filter options`}
         >
           <h4 className="font-medium text-gray-900">Categories</h4>
           {compact && (
             <div className="flex items-center gap-2">
               {filters.categories.length > 0 && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge 
+                  variant="default" 
+                  className="text-xs text-white" 
+                  style={{ backgroundColor: '#6a40f2' }}
+                  aria-label={`${filters.categories.length} categories selected`}
+                >
                   {filters.categories.length}
                 </Badge>
               )}
               {showCategories ? (
-                <ChevronUp className="h-4 w-4 text-gray-500" />
+                <ChevronUp className="h-4 w-4 text-gray-500" aria-hidden="true" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
+                <ChevronDown className="h-4 w-4 text-gray-500" aria-hidden="true" />
               )}
             </div>
           )}
         </button>
 
         {showCategories && (
-          <div className="mt-3 space-y-3">
+          <div 
+            id="categories-content"
+            className="mt-3 space-y-3"
+            role="group"
+            aria-labelledby="categories-heading"
+          >
+            <div className="sr-only" id="categories-heading">Category filter options</div>
             {categoriesLoading ? (
-              <div className="text-sm text-gray-500">Loading categories...</div>
+              <div className="text-sm text-gray-500" role="status" aria-live="polite">Loading categories...</div>
             ) : (
               <>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Category options">
                   {visibleCategories.map((category) => (
                     <CategoryBadge
                       key={category.id}
@@ -194,6 +214,10 @@ export function Filters({
                     size="sm"
                     onClick={() => setShowAllCategories(!showAllCategories)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
+                    aria-label={showAllCategories 
+                      ? 'Show fewer categories' 
+                      : `Show ${categories.length - 8} more categories`
+                    }
                   >
                     {showAllCategories 
                       ? 'Show less' 
@@ -211,30 +235,44 @@ export function Filters({
       <Card className="p-4">
         <button
           onClick={() => setShowTags(!showTags)}
-          className="flex items-center justify-between w-full text-left"
+          className="flex items-center justify-between w-full text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none rounded p-2 -m-2"
+          aria-expanded={showTags}
+          aria-controls="tags-content"
+          aria-label={`${showTags ? 'Hide' : 'Show'} tags filter options`}
         >
           <h4 className="font-medium text-gray-900">Tags</h4>
           <div className="flex items-center gap-2">
             {filters.tags.length > 0 && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge 
+                variant="default" 
+                className="text-xs text-white" 
+                style={{ backgroundColor: '#6a40f2' }}
+                aria-label={`${filters.tags.length} tags selected`}
+              >
                 {filters.tags.length}
               </Badge>
             )}
             {showTags ? (
-              <ChevronUp className="h-4 w-4 text-gray-500" />
+              <ChevronUp className="h-4 w-4 text-gray-500" aria-hidden="true" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-500" />
+              <ChevronDown className="h-4 w-4 text-gray-500" aria-hidden="true" />
             )}
           </div>
         </button>
 
         {showTags && (
-          <div className="mt-3 space-y-3">
+          <div 
+            id="tags-content"
+            className="mt-3 space-y-3"
+            role="group"
+            aria-labelledby="tags-heading"
+          >
+            <div className="sr-only" id="tags-heading">Tag filter options</div>
             {tagsLoading ? (
-              <div className="text-sm text-gray-500">Loading tags...</div>
+              <div className="text-sm text-gray-500" role="status" aria-live="polite">Loading tags...</div>
             ) : (
               <>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Tag options">
                   {visibleTags.map((tag) => (
                     <TagBadge
                       key={tag.id}
@@ -251,6 +289,10 @@ export function Filters({
                     size="sm"
                     onClick={() => setShowAllTags(!showAllTags)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
+                    aria-label={showAllTags 
+                      ? 'Show fewer tags' 
+                      : `Show ${tags.length - 12} more tags`
+                    }
                   >
                     {showAllTags 
                       ? 'Show less' 
@@ -278,21 +320,28 @@ function CategoryBadge({ category, isSelected, onClick }: CategoryBadgeProps) {
   return (
     <Badge
       variant={isSelected ? "default" : "secondary"}
-      className="cursor-pointer transition-all duration-200 hover:scale-105"
+      className="cursor-pointer transition-all duration-200 hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
       style={isSelected ? {
-        backgroundColor: category.color,
-        color: 'white',
-        borderColor: category.color
+        backgroundColor: '#6a40f2'
       } : {
-        backgroundColor: category.color + '15',
-        color: category.color,
-        borderColor: category.color + '30'
+        backgroundColor: '#f4f0ff',
+        color: '#6a40f2'
       }}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-pressed={isSelected}
+      aria-label={`${isSelected ? 'Remove' : 'Add'} ${category.name} category filter ${category.count > 0 ? `(${category.count} articles)` : ''}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       {category.name}
       {category.count > 0 && (
-        <span className="ml-1 opacity-75">({category.count})</span>
+        <span className="ml-1 opacity-75" aria-hidden="true">({category.count})</span>
       )}
     </Badge>
   );
@@ -309,12 +358,30 @@ function TagBadge({ tag, isSelected, onClick }: TagBadgeProps) {
   return (
     <Badge
       variant={isSelected ? "default" : "outline"}
-      className="cursor-pointer transition-all duration-200 hover:scale-105"
+      className="cursor-pointer transition-all duration-200 hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500"
+      style={isSelected ? {
+        backgroundColor: '#6a40f2',
+        color: 'white',
+        borderColor: '#6a40f2'
+      } : {
+        borderColor: '#bfa5ff',
+        color: '#6a40f2'
+      }}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-pressed={isSelected}
+      aria-label={`${isSelected ? 'Remove' : 'Add'} ${tag.name} tag filter ${tag.count > 0 ? `(${tag.count} articles)` : ''}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       {tag.name}
       {tag.count > 0 && (
-        <span className="ml-1 opacity-75">({tag.count})</span>
+        <span className="ml-1 opacity-75" aria-hidden="true">({tag.count})</span>
       )}
     </Badge>
   );
