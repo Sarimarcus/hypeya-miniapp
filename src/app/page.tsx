@@ -1,4 +1,12 @@
 import Image from "next/image";
+import TestComponent from "@/components/TestComponent";
+import MobileTestComponent from "@/components/MobileTestComponent";
+import ShadcnTestComponent from "@/components/ShadcnTestComponent";
+import ProjectStructureTest from "@/components/ProjectStructureTest";
+import { TypeTest } from "@/components/test/TypeTest";
+import { ApiConstantsTest } from "@/components/test/ApiConstantsTest";
+import { WordPressApiTest } from "@/components/test/WordPressApiTest";
+import { UiComponentsTest } from "@/components/test/UiComponentsTest";
 
 export default function Home() {
   return (
@@ -50,6 +58,22 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        
+        <TestComponent message="TypeScript is working!" count={42} />
+        
+        <MobileTestComponent />
+        
+        <ShadcnTestComponent />
+        
+        <ProjectStructureTest />
+        
+        <TypeTest />
+        
+        <ApiConstantsTest />
+        
+        <WordPressApiTest />
+        
+        <UiComponentsTest />
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
