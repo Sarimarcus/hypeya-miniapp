@@ -25,10 +25,10 @@ export default function GlobalError({
                 <AlertTriangle className="w-6 h-6 text-red-600" />
               </div>
               <CardTitle className="text-xl text-gray-900">
-                Application Error
+                Error de aplicación
               </CardTitle>
               <CardDescription>
-                A critical error occurred. Please restart the application.
+                Ocurrió un error crítico. Reinicia la aplicación.
               </CardDescription>
             </CardHeader>
 
@@ -39,7 +39,7 @@ export default function GlobalError({
                   className="w-full"
                   variant="default"
                 >
-                  Restart Application
+                  Reiniciar aplicación
                 </Button>
 
                 <Button 
@@ -48,14 +48,12 @@ export default function GlobalError({
                   className="w-full"
                 >
                   <Home className="w-4 h-4 mr-2" />
-                  Go to Home
+                  Ir al inicio
                 </Button>
               </div>
 
               {error.digest && (
-                <p className="text-xs text-gray-500 text-center">
-                  Error ID: {error.digest}
-                </p>
+                <p className="text-xs text-gray-500 text-center">ID de error: {error.digest}</p>
               )}
             </CardContent>
           </Card>

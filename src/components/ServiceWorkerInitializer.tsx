@@ -33,7 +33,7 @@ export function ServiceWorkerInitializer() {
   if (showOfflineMessage && !isOnline) {
     return (
       <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-black p-2 text-center text-sm font-medium">
-        You&apos;re offline. Some features may be limited.
+        Estás sin conexión. Algunas funciones pueden estar limitadas.
       </div>
     );
   }

@@ -18,13 +18,13 @@ interface ErrorMessageProps {
 }
 
 export function ErrorMessage({
-  title = 'Something went wrong',
+  title = 'Algo salió mal',
   message,
   onRetry,
   onDismiss,
   variant = 'default',
   className,
-  retryText = 'Try again'
+  retryText = 'Intentar de nuevo'
 }: ErrorMessageProps) {
   const baseClasses = 'flex flex-col items-center text-center';
   
@@ -59,7 +59,7 @@ export function ErrorMessage({
         <button
           onClick={onDismiss}
           className="absolute top-2 right-2 p-1 rounded-full hover:bg-red-600 transition-colors"
-          aria-label="Dismiss error"
+          aria-label="Descartar error"
         >
           <X className="w-4 h-4" />
         </button>
@@ -98,7 +98,7 @@ export function ErrorMessage({
             variant="outline"
             size="sm"
           >
-            Dismiss
+            Cerrar
           </Button>
         )}
       </div>
@@ -150,10 +150,10 @@ export function NetworkError({
 }) {
   return (
     <ErrorMessage
-      title="Connection Problem"
-      message="Please check your internet connection and try again."
+      title="Problema de conexión"
+      message="Por favor, verifica tu conexión a internet e inténtalo de nuevo."
       onRetry={onRetry}
-      retryText="Retry"
+      retryText="Reintentar"
       className={className}
     />
   );
@@ -171,10 +171,10 @@ export function NotFoundError({
 }) {
   return (
     <ErrorMessage
-      title="Not Found"
-      message={`The ${type} you're looking for doesn't exist or has been moved.`}
+      title="No encontrado"
+      message={`El ${type} que buscas no existe o ha sido movido.`}
       onRetry={onGoBack}
-      retryText="Go Back"
+      retryText="Volver"
       className={className}
     />
   );

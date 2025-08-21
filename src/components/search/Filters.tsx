@@ -92,18 +92,18 @@ export function Filters({
     : tags.slice(0, 12);
 
   return (
-    <div className={cn("space-y-4", className)} role="region" aria-label="Article filters">
+    <div className={cn("space-y-4", className)} role="region" aria-label="Filtros de artículos">
       {/* Filter Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Filter className="h-5 w-5 text-gray-600" aria-hidden="true" />
-          <h3 className="font-medium text-gray-900">Filters</h3>
+          <h3 className="font-medium text-gray-900">Filtros</h3>
           {hasActiveFilters && (
             <Badge 
               variant="default" 
               className="text-xs text-white" 
               style={{ backgroundColor: '#6a40f2' }}
-              aria-label={`${filters.categories.length + filters.tags.length} active filters`}
+              aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
             >
               {filters.categories.length + filters.tags.length}
             </Badge>
@@ -116,20 +116,20 @@ export function Filters({
             size="sm"
             onClick={clearAllFilters}
             className="text-gray-500 hover:text-gray-700"
-            aria-label="Clear all filters"
+            aria-label="Borrar todos los filtros"
           >
-            Clear all
+            Borrar todo
           </Button>
         )}
       </div>
 
       {/* Active Filters Summary */}
       {hasActiveFilters && compact && (
-        <div className="space-y-2" role="status" aria-label="Active filters summary">
+        <div className="space-y-2" role="status" aria-label="Resumen de filtros activos">
           {filters.categories.length > 0 && (
             <div>
-              <p className="text-sm text-gray-600 mb-1">Categories:</p>
-              <div className="flex flex-wrap gap-1" role="list" aria-label="Selected categories">
+              <p className="text-sm text-gray-600 mb-1">Categorías:</p>
+              <div className="flex flex-wrap gap-1" role="list" aria-label="Categorías seleccionadas">
                 {getSelectedCategoryNames().map((name, index) => (
                   <Badge key={index} variant="secondary" className="text-xs" role="listitem">
                     {name}
@@ -141,8 +141,8 @@ export function Filters({
           
           {filters.tags.length > 0 && (
             <div>
-              <p className="text-sm text-gray-600 mb-1">Tags:</p>
-              <div className="flex flex-wrap gap-1" role="list" aria-label="Selected tags">
+              <p className="text-sm text-gray-600 mb-1">Etiquetas:</p>
+              <div className="flex flex-wrap gap-1" role="list" aria-label="Etiquetas seleccionadas">
                 {getSelectedTagNames().map((name, index) => (
                   <Badge key={index} variant="outline" className="text-xs" role="listitem">
                     {name}
@@ -161,9 +161,9 @@ export function Filters({
           className="flex items-center justify-between w-full text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none rounded p-2 -m-2"
           aria-expanded={showCategories}
           aria-controls="categories-content"
-          aria-label={`${showCategories ? 'Hide' : 'Show'} categories filter options`}
+          aria-label={`${showCategories ? 'Ocultar' : 'Mostrar'} opciones de filtro de categorías`}
         >
-          <h4 className="font-medium text-gray-900">Categories</h4>
+          <h4 className="font-medium text-gray-900">Categorías</h4>
           {compact && (
             <div className="flex items-center gap-2">
               {filters.categories.length > 0 && (
@@ -171,7 +171,7 @@ export function Filters({
                   variant="default" 
                   className="text-xs text-white" 
                   style={{ backgroundColor: '#6a40f2' }}
-                  aria-label={`${filters.categories.length} categories selected`}
+                  aria-label={`${filters.categories.length} categorías seleccionadas`}
                 >
                   {filters.categories.length}
                 </Badge>
@@ -192,12 +192,12 @@ export function Filters({
             role="group"
             aria-labelledby="categories-heading"
           >
-            <div className="sr-only" id="categories-heading">Category filter options</div>
+            <div className="sr-only" id="categories-heading">Opciones de filtro de categoría</div>
             {categoriesLoading ? (
-              <div className="text-sm text-gray-500" role="status" aria-live="polite">Loading categories...</div>
+              <div className="text-sm text-gray-500" role="status" aria-live="polite">Cargando categorías...</div>
             ) : (
               <>
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Category options">
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Opciones de categoría">
                   {visibleCategories.map((category) => (
                     <CategoryBadge
                       key={category.id}
@@ -215,13 +215,13 @@ export function Filters({
                     onClick={() => setShowAllCategories(!showAllCategories)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
                     aria-label={showAllCategories 
-                      ? 'Show fewer categories' 
-                      : `Show ${categories.length - 8} more categories`
+                      ? 'Ver menos categorías' 
+                      : `Ver ${categories.length - 8} categorías más`
                     }
                   >
                     {showAllCategories 
-                      ? 'Show less' 
-                      : `Show ${categories.length - 8} more`
+                      ? 'Ver menos' 
+                      : `Ver ${categories.length - 8} más`
                     }
                   </Button>
                 )}
@@ -238,16 +238,16 @@ export function Filters({
           className="flex items-center justify-between w-full text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none rounded p-2 -m-2"
           aria-expanded={showTags}
           aria-controls="tags-content"
-          aria-label={`${showTags ? 'Hide' : 'Show'} tags filter options`}
+          aria-label={`${showTags ? 'Ocultar' : 'Mostrar'} opciones de filtro de etiquetas`}
         >
-          <h4 className="font-medium text-gray-900">Tags</h4>
+          <h4 className="font-medium text-gray-900">Etiquetas</h4>
           <div className="flex items-center gap-2">
             {filters.tags.length > 0 && (
               <Badge 
                 variant="default" 
                 className="text-xs text-white" 
                 style={{ backgroundColor: '#6a40f2' }}
-                aria-label={`${filters.tags.length} tags selected`}
+                aria-label={`${filters.tags.length} etiquetas seleccionadas`}
               >
                 {filters.tags.length}
               </Badge>
@@ -267,12 +267,12 @@ export function Filters({
             role="group"
             aria-labelledby="tags-heading"
           >
-            <div className="sr-only" id="tags-heading">Tag filter options</div>
+            <div className="sr-only" id="tags-heading">Opciones de filtro de etiquetas</div>
             {tagsLoading ? (
-              <div className="text-sm text-gray-500" role="status" aria-live="polite">Loading tags...</div>
+              <div className="text-sm text-gray-500" role="status" aria-live="polite">Cargando etiquetas...</div>
             ) : (
               <>
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Tag options">
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Opciones de etiquetas">
                   {visibleTags.map((tag) => (
                     <TagBadge
                       key={tag.id}
@@ -290,13 +290,13 @@ export function Filters({
                     onClick={() => setShowAllTags(!showAllTags)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
                     aria-label={showAllTags 
-                      ? 'Show fewer tags' 
-                      : `Show ${tags.length - 12} more tags`
+                      ? 'Ver menos etiquetas' 
+                      : `Ver ${tags.length - 12} etiquetas más`
                     }
                   >
                     {showAllTags 
-                      ? 'Show less' 
-                      : `Show ${tags.length - 12} more`
+                      ? 'Ver menos' 
+                      : `Ver ${tags.length - 12} más`
                     }
                   </Button>
                 )}
@@ -331,7 +331,7 @@ function CategoryBadge({ category, isSelected, onClick }: CategoryBadgeProps) {
       role="button"
       tabIndex={0}
       aria-pressed={isSelected}
-      aria-label={`${isSelected ? 'Remove' : 'Add'} ${category.name} category filter ${category.count > 0 ? `(${category.count} articles)` : ''}`}
+      aria-label={`${isSelected ? 'Quitar' : 'Añadir'} filtro de categoría ${category.name} ${category.count > 0 ? `(${category.count} artículos)` : ''}`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -371,7 +371,7 @@ function TagBadge({ tag, isSelected, onClick }: TagBadgeProps) {
       role="button"
       tabIndex={0}
       aria-pressed={isSelected}
-      aria-label={`${isSelected ? 'Remove' : 'Add'} ${tag.name} tag filter ${tag.count > 0 ? `(${tag.count} articles)` : ''}`}
+      aria-label={`${isSelected ? 'Quitar' : 'Añadir'} filtro de etiqueta ${tag.name} ${tag.count > 0 ? `(${tag.count} artículos)` : ''}`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();

@@ -170,7 +170,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <input
             type="text"
-            placeholder="Search articles..."
+            placeholder="Buscar artículos..."
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-base"
@@ -333,7 +333,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
               <div className="text-center py-12">
                 <p className="text-gray-500 mb-2">No articles found</p>
                 <p className="text-sm text-gray-400">
-                  Try adjusting your search terms or filters
+                  Prueba ajustando tus términos de búsqueda o filtros
                 </p>
               </div>
             )}
@@ -343,7 +343,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
         {!query && !loading && (
           <div className="p-4 text-center py-12">
             <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 mb-2">Start typing to search</p>
+            <p className="text-gray-500 mb-2">Empieza a escribir para buscar</p>
             <p className="text-sm text-gray-400">
               Search through all articles, filter by categories and tags
             </p>

@@ -19,13 +19,13 @@ export default function OfflinePage() {
             <WifiOff className="h-8 w-8 text-gray-600" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            You&apos;re Offline
+            Estás sin conexión
           </CardTitle>
         </CardHeader>
         
         <CardContent className="text-center space-y-6">
           <p className="text-gray-600">
-            It looks like you&apos;re not connected to the internet. Don&apos;t worry, you can still browse previously viewed articles.
+            Parece que no estás conectado a internet. No te preocupes, aún puedes ver artículos previamente cargados.
           </p>
           
           <div className="space-y-3">
@@ -35,31 +35,27 @@ export default function OfflinePage() {
               variant="default"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              Try Again
+              Intentar de nuevo
             </Button>
             
             <Link href="/" className="block">
               <Button variant="outline" className="w-full">
                 <Home className="mr-2 h-4 w-4" />
-                Go Home
+                Ir al inicio
               </Button>
             </Link>
           </div>
           
           <div className="pt-4 border-t border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-2">
-              While you&apos;re offline:
-            </h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Mientras estás sin conexión:</h3>
             <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Browse cached articles</li>
-              <li>• View saved content</li>
-              <li>• Use search functionality</li>
+              <li>• Ver artículos en caché</li>
+              <li>• Ver contenido guardado</li>
+              <li>• Usar la búsqueda</li>
             </ul>
           </div>
           
-          <div className="text-xs text-gray-500">
-            Your data will sync automatically when you&apos;re back online.
-          </div>
+          <div className="text-xs text-gray-500">Tus datos se sincronizarán automáticamente cuando vuelvas a estar en línea.</div>
         </CardContent>
       </Card>
     </div>

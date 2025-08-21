@@ -44,10 +44,10 @@ export default function Error({
             <AlertTriangle className="w-6 h-6 text-red-600" />
           </div>
           <CardTitle className="text-xl text-gray-900">
-            Something went wrong!
+            ¡Algo salió mal!
           </CardTitle>
           <CardDescription>
-            An unexpected error occurred while loading this page.
+            Ocurrió un error inesperado al cargar esta página.
           </CardDescription>
         </CardHeader>
 
@@ -75,7 +75,7 @@ export default function Error({
               variant="default"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
-              Try again
+              Intentar de nuevo
             </Button>
 
             <Button 
@@ -84,7 +84,7 @@ export default function Error({
               className="w-full"
             >
               <Home className="w-4 h-4 mr-2" />
-              Go to Home
+              Ir al inicio
             </Button>
 
             <Button 
@@ -92,7 +92,7 @@ export default function Error({
               variant="ghost"
               className="w-full text-sm"
             >
-              Reload Page
+              Recargar página
             </Button>
           </div>
         </CardContent>

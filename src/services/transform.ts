@@ -397,7 +397,7 @@ export class TransformService {
         break;
     }
 
-    return new Intl.DateTimeFormat('en-US', options).format(date);
+    return new Intl.DateTimeFormat('es-ES', options).format(date);
   }
 
   /**
@@ -411,13 +411,13 @@ export class TransformService {
     const diffDays = Math.floor(diffHours / 24);
 
     if (diffMinutes < 1) {
-      return 'Just now';
+      return 'Ahora mismo';
     } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+      return `${diffMinutes} minuto${diffMinutes !== 1 ? 's' : ''} atrás`;
     } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+      return `${diffHours} hora${diffHours !== 1 ? 's' : ''} atrás`;
     } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+      return `${diffDays} día${diffDays !== 1 ? 's' : ''} atrás`;
     } else {
       return this.formatDate(date, 'medium');
     }

@@ -83,7 +83,7 @@ export function ArticleCard({
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('es-ES', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -109,7 +109,7 @@ export function ArticleCard({
       }}
       tabIndex={0}
       role="article"
-      aria-label={`Read article: ${article.title}`}
+      aria-label={`Leer artículo: ${article.title}`}
     >
       <CardContent className={cardClasses[variant]}>
         {/* Featured Image */}
@@ -131,7 +131,7 @@ export function ArticleCard({
               variant="default" 
               className="text-xs text-white"
               style={{ backgroundColor: '#6a40f2' }}
-              aria-label={`Category: ${article.categories[0].name}`}
+              aria-label={`Categoría: ${article.categories[0].name}`}
             >
               <Tag className="w-3 h-3 mr-1" aria-hidden="true" />
               {article.categories[0].name}
@@ -152,11 +152,11 @@ export function ArticleCard({
         )}
 
         {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500" role="group" aria-label="Article metadata">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500" role="group" aria-label="Metadatos del artículo">
           {/* Published Date */}
           <div className="flex items-center gap-1">
             <Calendar className="w-3 h-3" aria-hidden="true" />
-            <time dateTime={article.publishedAt.toISOString()} aria-label={`Published on ${formatDate(article.publishedAt)}`}>
+            <time dateTime={article.publishedAt.toISOString()} aria-label={`Publicado el ${formatDate(article.publishedAt)}`}>
               {formatDate(article.publishedAt)}
             </time>
           </div>
@@ -164,8 +164,8 @@ export function ArticleCard({
           {/* Reading Time (estimated) */}
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3" aria-hidden="true" />
-            <span aria-label={`Estimated reading time: ${Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} minutes`}>
-              {Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} min read
+            <span aria-label={`Tiempo de lectura estimado: ${Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} minutos`}>
+              {Math.max(1, Math.ceil(stripHtml(article.content).length / 1000))} min
             </span>
           </div>
 
@@ -173,8 +173,8 @@ export function ArticleCard({
           {showAuthor && article.author && (
             <div className="flex items-center gap-1">
               <User className="w-3 h-3" aria-hidden="true" />
-              <span aria-label={`Author: ${article.author.name || 'Hypeya Team'}`}>
-                {article.author.name || 'Hypeya Team'}
+              <span aria-label={`Autor: ${article.author.name || 'Equipo Hypeya'}`}>
+                {article.author.name || 'Equipo Hypeya'}
               </span>
             </div>
           )}

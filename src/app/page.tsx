@@ -90,14 +90,14 @@ export default function HomePage() {
             />
           </div>
           <p className="text-xl font-content text-gray-600 max-w-2xl mx-auto mb-6">
-            Discover the latest articles, insights, and stories from our community
+            Descubre los últimos artículos, ideas e historias de nuestra comunidad
           </p>
 
           {/* Prominent Search Bar */}
           <div className="max-w-md mx-auto mb-4">
             <SearchBar
               onAdvancedSearch={handleAdvancedSearch}
-              placeholder="Search articles..."
+              placeholder="Buscar artículos..."
             />
           </div>
 
@@ -107,15 +107,15 @@ export default function HomePage() {
             className="mb-4 border-hypeya-600 text-hypeya-600 hover:bg-hypeya-50"
             aria-expanded={showFilters}
             aria-controls="filters-section"
-            aria-label={`${showFilters ? 'Hide' : 'Show'} article filters`}
+            aria-label={`${showFilters ? 'Ocultar' : 'Mostrar'} filtros de artículos`}
           >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
             {hasActiveFilters && (
               <Badge 
                 variant="default" 
                 className="ml-2 text-white" 
                 style={{ backgroundColor: '#6a40f2' }}
-                aria-label={`${filters.categories.length + filters.tags.length} active filters`}
+                aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
               >
                 {filters.categories.length + filters.tags.length}
               </Badge>
@@ -125,7 +125,7 @@ export default function HomePage() {
 
         {/* Filters Panel */}
         {showFilters && (
-          <section id="filters-section" className="mb-8" aria-label="Article filtering options">
+          <section id="filters-section" className="mb-8" aria-label="Opciones de filtrado de artículos">
             <Filters
               filters={filters}
               onFiltersChange={handleFiltersChange}
@@ -137,8 +137,8 @@ export default function HomePage() {
         {/* Categories Section */}
         {!categoriesLoading && categories.length > 0 && !hasActiveFilters && (
           <section className="mb-12">
-            <h2 className="text-2xl font-title font-bold text-gray-900 mb-6">Browse by Category</h2>
-            <div className="flex flex-wrap gap-2" role="group" aria-label="Category quick filters">
+            <h2 className="text-2xl font-title font-bold text-gray-900 mb-6">Explorar por categoría</h2>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filtros rápidos por categoría">
               {categories.slice(0, 8).map((category) => (
                 <Badge
                   key={category.id}
@@ -153,7 +153,7 @@ export default function HomePage() {
                   }))}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Filter by ${category.name} category (${category.count} articles)`}
+                  aria-label={`Filtrar por la categoría ${category.name} (${category.count} artículos)`}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
@@ -177,11 +177,11 @@ export default function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-title font-bold text-gray-900">
-              {hasActiveFilters ? 'Filtered Articles' : 'Latest Articles'}
+              {hasActiveFilters ? 'Artículos filtrados' : 'Últimos artículos'}
             </h2>
             {hasActiveFilters && (
               <p className="text-gray-600" role="status" aria-live="polite">
-                {articles.length} article{articles.length !== 1 ? 's' : ''}
+                {articles.length} artículo{articles.length !== 1 ? 's' : ''}
               </p>
             )}
           </div>
@@ -194,13 +194,13 @@ export default function HomePage() {
 
           {loading && articles.length === 0 && (
             <div className="flex justify-center py-12" role="status" aria-live="polite">
-              <LoadingSpinner size="lg" text="Loading articles..." />
+              <LoadingSpinner size="lg" text="Cargando artículos..." />
             </div>
           )}
 
           {articles.length > 0 && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="feed" aria-label="Articles list">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="feed" aria-label="Lista de artículos">
                 {articles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
@@ -213,15 +213,15 @@ export default function HomePage() {
                     disabled={loading}
                     variant="outline"
                     size="lg"
-                    aria-label={loading ? 'Loading more articles...' : 'Load more articles'}
+                    aria-label={loading ? 'Cargando más artículos...' : 'Cargar más artículos'}
                   >
                     {loading ? (
                       <>
                         <LoadingSpinner size="sm" className="mr-2" />
-                        Loading...
+                        Cargando...
                       </>
                     ) : (
-                      'Load More Articles'
+                      'Cargar más artículos'
                     )}
                   </Button>
                 </div>
@@ -232,15 +232,15 @@ export default function HomePage() {
           {!loading && !error && articles.length === 0 && (
             <div className="text-center py-12" role="status" aria-live="polite">
               <p className="text-gray-500 mb-2">
-                {hasActiveFilters ? 'No articles match your filters' : 'No articles found. Check back later!'}
+                {hasActiveFilters ? 'No hay artículos que coincidan con tus filtros' : 'No se encontraron artículos. ¡Vuelve más tarde!'}
               </p>
               {hasActiveFilters && (
                 <Button
                   variant="outline"
                   onClick={() => setFilters({ categories: [], tags: [], search: '' })}
-                  aria-label="Clear all filters to show all articles"
+                  aria-label="Borrar todos los filtros para mostrar todos los artículos"
                 >
-                  Clear Filters
+                  Borrar filtros
                 </Button>
               )}
             </div>

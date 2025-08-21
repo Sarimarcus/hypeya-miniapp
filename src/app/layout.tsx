@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://hypeya.xyz"),
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "es_ES",
     url: "https://hypeya.xyz",
     title: "HYPEYA - Tech News & Innovation",
     description: "Stay updated with the latest in technology, AI, and innovation",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HYPEYA - Tech News & Innovation", 
-    description: "Stay updated with the latest in technology, AI, and innovation",
+    title: "HYPEYA - Noticias y Innovación Tech", 
+    description: "Mantente al día con lo último en tecnología, IA e innovación",
     images: ["/images/hypeya-logo.png"],
   },
   robots: {
@@ -75,16 +75,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${fredoka.variable} ${inter.variable} antialiased`}
       >
-        {/* Skip Navigation Link */}
+        {/* Enlace para saltar la navegación */}
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-hypeya-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg"
+          aria-label="Saltar al contenido principal"
         >
-          Skip to main content
+          Saltar al contenido principal
         </a>
         
         <ErrorBoundary>

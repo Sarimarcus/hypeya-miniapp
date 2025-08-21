@@ -38,7 +38,7 @@ export function LoadingSpinner({
           sizeClasses[size]
         )}
         role="status"
-        aria-label="Loading"
+        aria-label="Cargando"
       />
       
       {/* Loading text */}
@@ -52,7 +52,7 @@ export function LoadingSpinner({
       )}
       
       {/* Screen reader text */}
-      <span className="sr-only">Loading content...</span>
+      <span className="sr-only">Cargando contenido...</span>
     </div>
   );
 }
@@ -76,9 +76,9 @@ export function InlineSpinner({
         className
       )}
       role="status"
-      aria-label="Loading"
+      aria-label="Cargando"
     >
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">Cargando...</span>
     </div>
   );
 }
