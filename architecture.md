@@ -125,7 +125,7 @@ hypeya-miniapp/
 │       ├── wordpressService.ts    # WordPress API service
 │       ├── articleService.ts      # Article-specific operations
 │       ├── cacheService.ts        # Caching logic
-│       └── transformService.ts    # Data transformation
+│       └── transform.ts           # Data transformation
 │
 ├── public/                        # Static assets
 │   ├── images/
@@ -235,7 +235,7 @@ class WordPressService {
 - Uses localStorage/sessionStorage for client-side caching
 - Cache invalidation strategies
 
-### 3. Transform Service (`services/transformService.ts`)
+### 3. Transform Service (`services/transform.ts`)
 
 - Transforms WordPress API responses to app-specific format
 - Sanitizes HTML content

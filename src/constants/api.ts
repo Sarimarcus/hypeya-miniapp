@@ -42,8 +42,9 @@ export const API_PARAMS = {
   
   // Common fields to include
   FIELDS: {
-    POSTS: 'id,date,slug,title,content,excerpt,author,featured_media,categories,tags,_embedded',
-    POST_PREVIEW: 'id,date,slug,title,excerpt,author,featured_media,categories,tags,_embedded',
+    // Include `link` so we get the canonical WordPress permalink
+    POSTS: 'id,date,slug,link,title,content,excerpt,author,featured_media,categories,tags,_embedded',
+    POST_PREVIEW: 'id,date,slug,link,title,excerpt,author,featured_media,categories,tags,_embedded',
     CATEGORIES: 'id,name,slug,description,count,parent',
     TAGS: 'id,name,slug,description,count',
     MEDIA: 'id,source_url,alt_text,media_details',

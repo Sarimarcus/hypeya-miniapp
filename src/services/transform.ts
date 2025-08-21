@@ -20,6 +20,8 @@ export class TransformService {
     return {
       id: wpArticle.id,
       slug: wpArticle.slug,
+      // Use canonical permalink from WordPress for outbound links
+      link: wpArticle.link,
       title: this.sanitizeHtml(wpArticle.title.rendered),
       content: this.sanitizeContent(wpArticle.content.rendered),
       excerpt: this.sanitizeHtml(wpArticle.excerpt.rendered),

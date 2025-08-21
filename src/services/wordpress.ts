@@ -5,18 +5,20 @@ import {
   API_CONFIG, 
   API_REQUESTS,
   API_ERRORS,
+  API_PARAMS,
   buildApiUrl 
 } from '@/constants/api';
 import { 
   WordPressArticle, 
   WordPressCategory, 
-  WordPressTag,
-  WordPressTerm
+  WordPressTag
 } from '@/types/wordpress';
 import { Article } from '@/types/article';
 import { Category } from '@/types/category';
 import { Tag } from '@/types/tag';
 import { ApiResponse, ApiError } from '@/types/api';
+import { TransformService } from '@/services/transform';
+import { mockWordpressApi } from '@/services/mockWordpress';
 
 export class WordPressApiService {
   private baseUrl: string;
@@ -25,6 +27,7 @@ export class WordPressApiService {
   private retryDelay: number;
   private username?: string;
   private apiKey?: string;
+  private useMock: boolean;
 
   constructor() {
     this.baseUrl = API_CONFIG.BASE_URL;
@@ -35,6 +38,9 @@ export class WordPressApiService {
     // Get credentials from environment variables
     this.username = process.env.WP_API_USERNAME;
     this.apiKey = process.env.WP_API_KEY;
+
+    // Use mock service when explicitly enabled (e.g., offline demos)
+    this.useMock = process.env.NEXT_PUBLIC_OFFLINE_MODE === 'true';
   }
 
   /**
@@ -140,75 +146,7 @@ export class WordPressApiService {
     };
   }
 
-  /**
-   * Transform WordPress article to application article format
-   */
-  private transformArticle(wpArticle: WordPressArticle): Article {
-    return {
-      id: wpArticle.id,
-      slug: wpArticle.slug,
-      title: wpArticle.title.rendered,
-      content: wpArticle.content.rendered,
-      excerpt: wpArticle.excerpt.rendered,
-      publishedAt: new Date(wpArticle.date),
-      updatedAt: new Date(wpArticle.modified),
-      link: wpArticle.link, // Direct WordPress article URL
-      author: {
-        id: wpArticle.author,
-        name: wpArticle._embedded?.author?.[0]?.name || 'Hypeya Team',
-        slug: wpArticle._embedded?.author?.[0]?.slug || 'hypeya-team',
-        description: wpArticle._embedded?.author?.[0]?.description || '',
-        avatarUrl: wpArticle._embedded?.author?.[0]?.avatar_urls?.['96'] || '/images/default-avatar.svg',
-      },
-      featuredImage: wpArticle._embedded?.['wp:featuredmedia']?.[0] ? {
-        id: wpArticle._embedded['wp:featuredmedia'][0].id,
-        url: wpArticle._embedded['wp:featuredmedia'][0].source_url,
-        alt: wpArticle._embedded['wp:featuredmedia'][0].alt_text || '',
-        width: wpArticle._embedded['wp:featuredmedia'][0].media_details?.width || 800,
-        height: wpArticle._embedded['wp:featuredmedia'][0].media_details?.height || 400,
-        sizes: {
-          thumbnail: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.thumbnail?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
-          medium: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.medium?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
-          large: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.large?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
-          full: wpArticle._embedded['wp:featuredmedia'][0].source_url,
-        },
-      } : {
-        id: 0,
-        url: '/images/default-featured.svg',
-        alt: 'Default article image',
-        width: 800,
-        height: 400,
-        sizes: {
-          thumbnail: '/images/default-featured.svg',
-          medium: '/images/default-featured.svg',
-          large: '/images/default-featured.svg',
-          full: '/images/default-featured.svg',
-        },
-      },
-      categories: wpArticle._embedded?.['wp:term']?.[0]?.map((cat: WordPressTerm) => ({
-        id: cat.id,
-        name: cat.name,
-        slug: cat.slug,
-        description: '', // WordPressTerm doesn't have description
-        count: 0, // Will be populated from separate API call if needed
-        color: '#3B82F6', // Default color, can be customized
-      })) || [{
-        id: wpArticle.categories?.[0] || 1,
-        name: 'General',
-        slug: 'general',
-        description: '',
-        count: 0,
-        color: '#3B82F6',
-      }],
-      tags: wpArticle._embedded?.['wp:term']?.[1]?.map((tag: WordPressTerm) => ({
-        id: tag.id,
-        name: tag.name,
-        slug: tag.slug,
-        description: '', // WordPressTerm doesn't have description
-        count: 0, // Will be populated from separate API call if needed
-      })) || [],
-    };
-  }
+  // Article transformation is centralized in TransformService
 
   /**
    * Transform WordPress category to application category format
@@ -266,10 +204,14 @@ export class WordPressApiService {
   // Public API methods
 
   /**
-   * Get latest articles with pagination
+   * Get latest articles with pagination - optimized with embedded data
    */
   async getLatestArticles(page = 1, perPage = 12): Promise<ApiResponse<Article[]>> {
     try {
+      if (this.useMock) {
+        return mockWordpressApi.getLatestArticles(page, perPage);
+      }
+      
       const request = API_REQUESTS.LATEST_ARTICLES(page, perPage);
       const url = buildApiUrl(request.endpoint, request.params);
       
@@ -280,89 +222,8 @@ export class WordPressApiService {
 
       const wpArticles: WordPressArticle[] = await response.json();
       
-      // Transform articles and enrich with additional data if needed
-      const articles: Article[] = [];
-      
-      for (const wpArticle of wpArticles) {
-        const baseArticle = this.transformArticle(wpArticle);
-        const article = { ...baseArticle };
-        
-        // If no embedded author data, fetch author separately
-        if (!wpArticle._embedded?.author?.[0] && wpArticle.author) {
-          try {
-            const authorResponse = await fetch(`${API_CONFIG.BASE_URL}/users/${wpArticle.author}`);
-            if (authorResponse.ok) {
-              const authorData = await authorResponse.json();
-              article.author = {
-                id: authorData.id,
-                name: authorData.name || 'Hypeya Team',
-                slug: authorData.slug || 'hypeya-team',
-                description: authorData.description || '',
-                avatarUrl: authorData.avatar_urls?.['96'] || '/images/default-avatar.svg',
-              };
-            }
-          } catch (error) {
-            console.warn('Failed to fetch author data:', error);
-          }
-        }
-        
-        // If no embedded featured media, fetch media separately
-        if (!wpArticle._embedded?.['wp:featuredmedia']?.[0] && wpArticle.featured_media) {
-          try {
-            const mediaResponse = await fetch(`${API_CONFIG.BASE_URL}/media/${wpArticle.featured_media}`);
-            if (mediaResponse.ok) {
-              const mediaData = await mediaResponse.json();
-              article.featuredImage = {
-                id: mediaData.id,
-                url: mediaData.source_url,
-                alt: mediaData.alt_text || '',
-                width: mediaData.media_details?.width || 800,
-                height: mediaData.media_details?.height || 400,
-                sizes: {
-                  thumbnail: mediaData.media_details?.sizes?.thumbnail?.source_url || mediaData.source_url,
-                  medium: mediaData.media_details?.sizes?.medium?.source_url || mediaData.source_url,
-                  large: mediaData.media_details?.sizes?.large?.source_url || mediaData.source_url,
-                  full: mediaData.source_url,
-                },
-              };
-            }
-          } catch (error) {
-            console.warn('Failed to fetch media data:', error);
-          }
-        }
-        
-        // Fetch categories if not embedded
-        if ((!wpArticle._embedded?.['wp:term']?.[0] || wpArticle._embedded['wp:term'][0].length === 0) && wpArticle.categories?.length > 0) {
-          try {
-            const categoriesPromises = wpArticle.categories.map(async (catId: number): Promise<Category | null> => {
-              const catResponse = await fetch(`${API_CONFIG.BASE_URL}/categories/${catId}`);
-              if (catResponse.ok) {
-                const catData = await catResponse.json();
-                return {
-                  id: catData.id,
-                  name: catData.name,
-                  slug: catData.slug,
-                  description: catData.description || '',
-                  count: catData.count || 0,
-                  color: '#3B82F6',
-                };
-              }
-              return null;
-            });
-            
-            const categoriesData = await Promise.all(categoriesPromises);
-            const validCategories = categoriesData.filter((cat): cat is Category => cat !== null);
-            
-            if (validCategories.length > 0) {
-              article.categories = validCategories;
-            }
-          } catch (error) {
-            console.warn('Failed to fetch categories data:', error);
-          }
-        }
-        
-        articles.push(article);
-      }
+      // Transform articles using embedded data - no additional API calls needed!
+      const articles = wpArticles.map(wpArticle => TransformService.transformArticle(wpArticle));
       
       const pagination = this.extractPaginationInfo(response);
 
@@ -377,10 +238,14 @@ export class WordPressApiService {
   }
 
   /**
-   * Get articles by category
+   * Get articles by category - optimized with embedded data
    */
   async getArticlesByCategory(categoryId: number, page = 1, perPage = 12): Promise<ApiResponse<Article[]>> {
     try {
+      if (this.useMock) {
+        return mockWordpressApi.getArticlesByCategory(categoryId, page, perPage);
+      }
+      
       const request = API_REQUESTS.ARTICLES_BY_CATEGORY(categoryId, page, perPage);
       const url = buildApiUrl(request.endpoint, request.params);
       
@@ -390,7 +255,10 @@ export class WordPressApiService {
       }
 
       const wpArticles: WordPressArticle[] = await response.json();
-      const articles = wpArticles.map(wp => this.transformArticle(wp));
+      
+      // Transform articles using embedded data - no additional API calls needed!
+      const articles = wpArticles.map(wpArticle => TransformService.transformArticle(wpArticle));
+      
       const pagination = this.extractPaginationInfo(response);
 
       return {
@@ -404,10 +272,14 @@ export class WordPressApiService {
   }
 
   /**
-   * Get single article by slug
+   * Get single article by slug - optimized with embedded data
    */
   async getArticleBySlug(slug: string): Promise<ApiResponse<Article | null>> {
     try {
+      if (this.useMock) {
+        return mockWordpressApi.getArticleBySlug(slug);
+      }
+      
       const request = API_REQUESTS.ARTICLE_BY_SLUG(slug);
       const url = buildApiUrl(request.endpoint, request.params);
       
@@ -425,7 +297,8 @@ export class WordPressApiService {
         };
       }
 
-      const article = this.transformArticle(wpArticles[0]);
+      // Transform article using embedded data - no additional API calls needed!
+      const article = TransformService.transformArticle(wpArticles[0]);
 
       return {
         data: article,
@@ -441,6 +314,9 @@ export class WordPressApiService {
    */
   async getCategories(): Promise<ApiResponse<Category[]>> {
     try {
+      if (this.useMock) {
+        return mockWordpressApi.getCategories();
+      }
       const request = API_REQUESTS.ALL_CATEGORIES();
       const url = buildApiUrl(request.endpoint, request.params);
       
@@ -461,6 +337,9 @@ export class WordPressApiService {
    */
   async getTags(): Promise<ApiResponse<Tag[]>> {
     try {
+      if (this.useMock) {
+        return mockWordpressApi.getTags();
+      }
       const request = API_REQUESTS.ALL_TAGS();
       const url = buildApiUrl(request.endpoint, request.params);
       
@@ -477,7 +356,7 @@ export class WordPressApiService {
   }
 
   /**
-   * Search articles
+   * Search articles - optimized with embedded data
    */
   async searchArticles(query: string, page = 1, perPage = 12): Promise<ApiResponse<Article[]>> {
     try {
@@ -490,7 +369,10 @@ export class WordPressApiService {
       }
 
       const wpArticles: WordPressArticle[] = await response.json();
-      const articles = wpArticles.map(wp => this.transformArticle(wp));
+      
+      // Transform articles using embedded data - no additional API calls needed!
+      const articles = wpArticles.map(wpArticle => TransformService.transformArticle(wpArticle));
+      
       const pagination = this.extractPaginationInfo(response);
 
       return {
@@ -504,7 +386,7 @@ export class WordPressApiService {
   }
 
   /**
-   * Get articles with multiple filter parameters
+   * Get articles with multiple filter parameters - optimized with embedded data
    */
   async getFilteredArticles(
     filters: {
@@ -516,6 +398,36 @@ export class WordPressApiService {
     perPage = 12
   ): Promise<ApiResponse<Article[]>> {
     try {
+      if (this.useMock) {
+        // Mock search/filter with the mock service's searchArticles
+        if (filters.search && filters.search.trim()) {
+          return mockWordpressApi.searchArticles(filters.search, page, perPage);
+        }
+        // Fall back to category-only or tag-only by filtering local results
+        if ((filters.categories && filters.categories.length) || (filters.tags && filters.tags.length)) {
+          const base = await mockWordpressApi.getLatestArticles(1, 100);
+          const filtered = base.data.filter((a) => {
+            const byCat = !filters.categories?.length || a.categories.some(c => filters.categories!.includes(c.id));
+            const byTag = !filters.tags?.length || a.tags.some(t => filters.tags!.includes(t.id));
+            return byCat && byTag;
+          });
+          const start = (page - 1) * perPage;
+          const data = filtered.slice(start, start + perPage);
+          return {
+            data,
+            success: true,
+            pagination: {
+              currentPage: page,
+              totalPages: Math.ceil(filtered.length / perPage) || 1,
+              totalItems: filtered.length,
+              itemsPerPage: perPage,
+              hasNext: start + perPage < filtered.length,
+              hasPrevious: page > 1,
+            },
+          };
+        }
+        return mockWordpressApi.getLatestArticles(page, perPage);
+      }
       const params = new URLSearchParams();
       
       // Add pagination
@@ -537,12 +449,16 @@ export class WordPressApiService {
         params.append('search', filters.search.trim());
       }
       
-      // Add embedded data
+      // Add embedded data and field selection for optimal performance
       params.append('_embed', 'true');
+      params.append('_fields', API_PARAMS.FIELDS.POSTS);
       
       // Order by date
       params.append('orderby', 'date');
       params.append('order', 'desc');
+      
+      // Only published posts
+      params.append('status', 'publish');
 
       const url = `${this.baseUrl}/posts?${params.toString()}`;
       
@@ -553,59 +469,8 @@ export class WordPressApiService {
 
       const wpArticles: WordPressArticle[] = await response.json();
       
-      // Transform articles and enrich with additional data if needed
-      const articles: Article[] = [];
-      
-      for (const wpArticle of wpArticles) {
-        const baseArticle = this.transformArticle(wpArticle);
-        const article = { ...baseArticle };
-        
-        // If no embedded author data, fetch author separately
-        if (!wpArticle._embedded?.author?.[0] && wpArticle.author) {
-          try {
-            const authorResponse = await fetch(`${API_CONFIG.BASE_URL}/users/${wpArticle.author}`);
-            if (authorResponse.ok) {
-              const authorData = await authorResponse.json();
-              article.author = {
-                id: authorData.id,
-                name: authorData.name || 'Hypeya Team',
-                slug: authorData.slug || 'hypeya-team',
-                description: authorData.description || '',
-                avatarUrl: authorData.avatar_urls?.['96'] || '/images/default-avatar.svg',
-              };
-            }
-          } catch (error) {
-            console.warn('Failed to fetch author data:', error);
-          }
-        }
-        
-        // If no embedded featured media, fetch media separately
-        if (!wpArticle._embedded?.['wp:featuredmedia']?.[0] && wpArticle.featured_media) {
-          try {
-            const mediaResponse = await fetch(`${API_CONFIG.BASE_URL}/media/${wpArticle.featured_media}`);
-            if (mediaResponse.ok) {
-              const mediaData = await mediaResponse.json();
-              article.featuredImage = {
-                id: mediaData.id,
-                url: mediaData.source_url,
-                alt: mediaData.alt_text || '',
-                width: mediaData.media_details?.width || 800,
-                height: mediaData.media_details?.height || 400,
-                sizes: {
-                  thumbnail: mediaData.media_details?.sizes?.thumbnail?.source_url || mediaData.source_url,
-                  medium: mediaData.media_details?.sizes?.medium?.source_url || mediaData.source_url,
-                  large: mediaData.media_details?.sizes?.large?.source_url || mediaData.source_url,
-                  full: mediaData.source_url,
-                },
-              };
-            }
-          } catch (error) {
-            console.warn('Failed to fetch media data:', error);
-          }
-        }
-        
-        articles.push(article);
-      }
+      // Transform articles using embedded data - no additional API calls needed!
+      const articles = wpArticles.map(wpArticle => TransformService.transformArticle(wpArticle));
 
       const pagination = this.extractPaginationInfo(response);
 

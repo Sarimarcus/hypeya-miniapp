@@ -198,7 +198,7 @@ This document contains granular, testable tasks for building the mobile-only MVP
 **End**: Working transform service with article transformation
 
 **Steps**:
-1. Create `src/services/transformService.ts` ✅
+1. Create `src/services/transform.ts` ✅
 2. Implement `transformArticle()` function ✅
 3. Handle title, excerpt, date formatting ✅
 4. Add basic HTML sanitization for content ✅
@@ -660,18 +660,21 @@ This document contains granular, testable tasks for building the mobile-only MVP
 
 ---
 
-### Task 12.2: Deploy to Vercel ⏳ PENDING
+### Task 12.2: Deploy to Vercel ✅ COMPLETED
 **Objective**: Deploy MVP to production
 **Start**: Environment configured
 **End**: Live app accessible via URL
 
 **Steps**:
-1. Connect GitHub repository to Vercel
-2. Configure build settings for Next.js
-3. Deploy and test production build
-4. Set up custom domain if needed
+1. Connect GitHub repository to Vercel ✅
+2. Configure build settings for Next.js ✅
+3. Deploy and test production build ✅
+4. Set up custom domain if needed ⏳
+5. Fix article URL generation for proper WordPress permalink structure ✅
 
-**Test**: App is accessible at production URL and fully functional
+**Test**: App is accessible at production URL and fully functional ✅
+
+**Production URL**: https://hypeya-miniapp-eum1029vz-sarimarcus-projects.vercel.app
 
 ---
 
@@ -695,7 +698,11 @@ This document contains granular, testable tasks for building the mobile-only MVP
 
 ### ⏳ PENDING:
 - **Task 11.4**: Final Mobile Testing
-- **Phase 12**: Deployment Tasks
+- **Custom Domain Setup**: Optional enhancement
+
+### ✅ RECENTLY COMPLETED:
+- **Task 12.2**: Vercel Deployment - App successfully deployed and live
+- **URL Fix**: Article URLs now properly generate WordPress permalink structure
 
 ### ⏸️ DEFERRED (Post-MVP):
 - **Phase 9**: Article Detail Page (will be implemented after MVP deployment)
@@ -746,4 +753,4 @@ This document contains granular, testable tasks for building the mobile-only MVP
 - ✅ Comprehensive caching strategies
 - ✅ Image optimization with lazy loading
 
-**MVP Status**: 95% Complete - Core features built and app successfully building. Ready for deployment with all TypeScript and build errors resolved.
+**MVP Status**: 98% Complete - App successfully deployed to production with all core features working. Article URL generation fixed to use proper WordPress permalink structure. Only final mobile device testing remains.
