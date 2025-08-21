@@ -28,19 +28,19 @@ export function UiComponentsTest() {
       name: 'John Doe',
       slug: 'john-doe',
       description: 'Frontend Developer & Technical Writer',
-      avatarUrl: 'https://via.placeholder.com/96x96'
+      avatarUrl: '/images/default-avatar.svg'
     },
     featuredImage: {
       id: 1,
-      url: 'https://via.placeholder.com/600x400?text=Featured+Image',
+      url: '/images/default-featured.svg',
       alt: 'Featured image for the article',
       width: 600,
       height: 400,
       sizes: {
-        thumbnail: 'https://via.placeholder.com/150x150',
-        medium: 'https://via.placeholder.com/300x200',
-        large: 'https://via.placeholder.com/600x400',
-        full: 'https://via.placeholder.com/1200x800'
+        thumbnail: '/images/default-featured.svg',
+        medium: '/images/default-featured.svg',
+        large: '/images/default-featured.svg',
+        full: '/images/default-featured.svg'
       }
     },
     categories: [{

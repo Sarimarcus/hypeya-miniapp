@@ -131,10 +131,10 @@ export function ArticleCard({
           </div>
 
           {/* Author */}
-          {showAuthor && (
+          {showAuthor && article.author && (
             <div className="flex items-center gap-1">
               <User className="w-3 h-3" />
-              <span>{article.author.name}</span>
+              <span>{article.author.name || 'Hypeya Team'}</span>
             </div>
           )}
         </div>

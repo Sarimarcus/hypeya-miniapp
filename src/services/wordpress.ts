@@ -154,24 +154,36 @@ export class WordPressApiService {
       updatedAt: new Date(wpArticle.modified),
       author: {
         id: wpArticle.author,
-        name: wpArticle._embedded?.author?.[0]?.name || 'Unknown Author',
-        slug: wpArticle._embedded?.author?.[0]?.slug || 'unknown',
-        description: wpArticle._embedded?.author?.[0]?.description,
-        avatarUrl: wpArticle._embedded?.author?.[0]?.avatar_urls?.['96'],
+        name: wpArticle._embedded?.author?.[0]?.name || 'Hypeya Team',
+        slug: wpArticle._embedded?.author?.[0]?.slug || 'hypeya-team',
+        description: wpArticle._embedded?.author?.[0]?.description || '',
+        avatarUrl: wpArticle._embedded?.author?.[0]?.avatar_urls?.['96'] || '/images/default-avatar.svg',
       },
       featuredImage: wpArticle._embedded?.['wp:featuredmedia']?.[0] ? {
         id: wpArticle._embedded['wp:featuredmedia'][0].id,
         url: wpArticle._embedded['wp:featuredmedia'][0].source_url,
         alt: wpArticle._embedded['wp:featuredmedia'][0].alt_text || '',
-        width: wpArticle._embedded['wp:featuredmedia'][0].media_details?.width || 0,
-        height: wpArticle._embedded['wp:featuredmedia'][0].media_details?.height || 0,
+        width: wpArticle._embedded['wp:featuredmedia'][0].media_details?.width || 800,
+        height: wpArticle._embedded['wp:featuredmedia'][0].media_details?.height || 400,
         sizes: {
-          thumbnail: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.thumbnail?.source_url,
-          medium: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.medium?.source_url,
-          large: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.large?.source_url,
+          thumbnail: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.thumbnail?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
+          medium: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.medium?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
+          large: wpArticle._embedded['wp:featuredmedia'][0].media_details?.sizes?.large?.source_url || wpArticle._embedded['wp:featuredmedia'][0].source_url,
           full: wpArticle._embedded['wp:featuredmedia'][0].source_url,
         },
-      } : undefined,
+      } : {
+        id: 0,
+        url: '/images/default-featured.svg',
+        alt: 'Default article image',
+        width: 800,
+        height: 400,
+        sizes: {
+          thumbnail: '/images/default-featured.svg',
+          medium: '/images/default-featured.svg',
+          large: '/images/default-featured.svg',
+          full: '/images/default-featured.svg',
+        },
+      },
       categories: wpArticle._embedded?.['wp:term']?.[0]?.map((cat: WordPressTerm) => ({
         id: cat.id,
         name: cat.name,
@@ -179,7 +191,14 @@ export class WordPressApiService {
         description: '', // WordPressTerm doesn't have description
         count: 0, // Will be populated from separate API call if needed
         color: '#3B82F6', // Default color, can be customized
-      })) || [],
+      })) || [{
+        id: wpArticle.categories?.[0] || 1,
+        name: 'General',
+        slug: 'general',
+        description: '',
+        count: 0,
+        color: '#3B82F6',
+      }],
       tags: wpArticle._embedded?.['wp:term']?.[1]?.map((tag: WordPressTerm) => ({
         id: tag.id,
         name: tag.name,
@@ -259,7 +278,91 @@ export class WordPressApiService {
       }
 
       const wpArticles: WordPressArticle[] = await response.json();
-      const articles = wpArticles.map(wp => this.transformArticle(wp));
+      
+      // Transform articles and enrich with additional data if needed
+      const articles: Article[] = [];
+      
+      for (const wpArticle of wpArticles) {
+        const baseArticle = this.transformArticle(wpArticle);
+        const article = { ...baseArticle };
+        
+        // If no embedded author data, fetch author separately
+        if (!wpArticle._embedded?.author?.[0] && wpArticle.author) {
+          try {
+            const authorResponse = await fetch(`${API_CONFIG.BASE_URL}/users/${wpArticle.author}`);
+            if (authorResponse.ok) {
+              const authorData = await authorResponse.json();
+              article.author = {
+                id: authorData.id,
+                name: authorData.name || 'Hypeya Team',
+                slug: authorData.slug || 'hypeya-team',
+                description: authorData.description || '',
+                avatarUrl: authorData.avatar_urls?.['96'] || '/images/default-avatar.svg',
+              };
+            }
+          } catch (error) {
+            console.warn('Failed to fetch author data:', error);
+          }
+        }
+        
+        // If no embedded featured media, fetch media separately
+        if (!wpArticle._embedded?.['wp:featuredmedia']?.[0] && wpArticle.featured_media) {
+          try {
+            const mediaResponse = await fetch(`${API_CONFIG.BASE_URL}/media/${wpArticle.featured_media}`);
+            if (mediaResponse.ok) {
+              const mediaData = await mediaResponse.json();
+              article.featuredImage = {
+                id: mediaData.id,
+                url: mediaData.source_url,
+                alt: mediaData.alt_text || '',
+                width: mediaData.media_details?.width || 800,
+                height: mediaData.media_details?.height || 400,
+                sizes: {
+                  thumbnail: mediaData.media_details?.sizes?.thumbnail?.source_url || mediaData.source_url,
+                  medium: mediaData.media_details?.sizes?.medium?.source_url || mediaData.source_url,
+                  large: mediaData.media_details?.sizes?.large?.source_url || mediaData.source_url,
+                  full: mediaData.source_url,
+                },
+              };
+            }
+          } catch (error) {
+            console.warn('Failed to fetch media data:', error);
+          }
+        }
+        
+        // Fetch categories if not embedded
+        if ((!wpArticle._embedded?.['wp:term']?.[0] || wpArticle._embedded['wp:term'][0].length === 0) && wpArticle.categories?.length > 0) {
+          try {
+            const categoriesPromises = wpArticle.categories.map(async (catId: number): Promise<Category | null> => {
+              const catResponse = await fetch(`${API_CONFIG.BASE_URL}/categories/${catId}`);
+              if (catResponse.ok) {
+                const catData = await catResponse.json();
+                return {
+                  id: catData.id,
+                  name: catData.name,
+                  slug: catData.slug,
+                  description: catData.description || '',
+                  count: catData.count || 0,
+                  color: '#3B82F6',
+                };
+              }
+              return null;
+            });
+            
+            const categoriesData = await Promise.all(categoriesPromises);
+            const validCategories = categoriesData.filter((cat): cat is Category => cat !== null);
+            
+            if (validCategories.length > 0) {
+              article.categories = validCategories;
+            }
+          } catch (error) {
+            console.warn('Failed to fetch categories data:', error);
+          }
+        }
+        
+        articles.push(article);
+      }
+      
       const pagination = this.extractPaginationInfo(response);
 
       return {

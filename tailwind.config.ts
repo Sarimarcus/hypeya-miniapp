@@ -16,6 +16,11 @@ const config: Config = {
       '2xl': '1536px',  // Extra large desktop
     },
     extend: {
+      fontFamily: {
+        'title': ['var(--font-fredoka)', 'system-ui', 'sans-serif'],
+        'content': ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        'sans': ['var(--font-inter)', 'system-ui', 'sans-serif'], // Default font
+      },
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',
         'safe-bottom': 'env(safe-area-inset-bottom)',
@@ -32,6 +37,19 @@ const config: Config = {
         '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
       },
       colors: {
+        'hypeya': {
+          50: '#f4f0ff',
+          100: '#ebe4ff',
+          200: '#d9ccff',
+          300: '#bfa5ff',
+          400: '#a074ff',
+          500: '#8441ff',
+          600: '#6a40f2', // Main brand color
+          700: '#5d2be8',
+          800: '#4e23c4',
+          900: '#421ea1',
+          950: '#281170',
+        },
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

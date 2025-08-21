@@ -1,6 +1,8 @@
 // Mobile-optimized error message component
 // Displays user-friendly error messages with retry functionality
 
+'use client';
+
 import { AlertCircle, RefreshCw, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

@@ -1,17 +1,20 @@
 // Mobile-optimized header component
-// Sticky header with logo and navigation for mobile app
+// Sticky header with logo, navigation and search for mobile app
 
 import { ArrowLeft, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SearchBar } from '@/components/search';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   title?: string;
   showBackButton?: boolean;
   showSearchButton?: boolean;
+  showSearchBar?: boolean;
   showMenuButton?: boolean;
   onBack?: () => void;
   onSearch?: () => void;
+  onAdvancedSearch?: (query: string) => void;
   onMenu?: () => void;
   className?: string;
   variant?: 'default' | 'transparent' | 'article';
@@ -21,9 +24,11 @@ export function Header({
   title = 'Hypeya',
   showBackButton = false,
   showSearchButton = false,
+  showSearchBar = false,
   showMenuButton = false,
   onBack,
   onSearch,
+  onAdvancedSearch,
   onMenu,
   className,
   variant = 'default'

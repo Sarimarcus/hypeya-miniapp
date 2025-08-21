@@ -1,0 +1,221 @@
+/* Mobile navigation transitions and animations */
+
+/* Base transition styles */
+.nav-transition-slide,
+.nav-transition-fade,
+.nav-transition-push,
+.nav-transition-modal {
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Slide transition */
+.nav-transition-slide {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.nav-transition-slide.entering {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.nav-transition-slide.exiting {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Fade transition */
+.nav-transition-fade {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.nav-transition-fade.entering {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.nav-transition-fade.exiting {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+/* Push transition */
+.nav-transition-push {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.nav-transition-push.entering {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.nav-transition-push.exiting {
+  transform: translateY(-10%);
+  opacity: 0;
+}
+
+/* Modal transition */
+.nav-transition-modal {
+  transform: translateY(100vh);
+  opacity: 0;
+}
+
+.nav-transition-modal.entering {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.nav-transition-modal.exiting {
+  transform: translateY(100vh);
+  opacity: 0;
+}
+
+/* Page container animations */
+.page-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 300ms ease-out;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 300ms ease-out;
+}
+
+/* Pull-to-refresh animations */
+@keyframes pull-indicator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+.pull-indicator {
+  animation: pull-indicator 0.2s ease-out forwards;
+}
+
+.pull-indicator.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Haptic feedback visual effects */
+.haptic-feedback {
+  position: relative;
+  overflow: hidden;
+}
+
+.haptic-feedback::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease-out, height 0.15s ease-out;
+}
+
+.haptic-feedback.active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* Swipe gesture indicators */
+.swipe-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  pointer-events: none;
+}
+
+.swipe-indicator.left {
+  left: 20px;
+  transform: translateY(-50%) translateX(-20px);
+}
+
+.swipe-indicator.right {
+  right: 20px;
+  transform: translateY(-50%) translateX(20px);
+}
+
+.swipe-indicator.active {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Faster transitions on mobile */
+  .nav-transition-slide,
+  .nav-transition-fade,
+  .nav-transition-push,
+  .nav-transition-modal {
+    transition-duration: 0.25s;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-transition-slide,
+    .nav-transition-fade,
+    .nav-transition-push,
+    .nav-transition-modal,
+    .page-enter-active,
+    .page-exit-active {
+      transition: none;
+    }
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .haptic-feedback::after {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .swipe-indicator {
+    background: CanvasText;
+    color: Canvas;
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Safe area handling for notched devices */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
