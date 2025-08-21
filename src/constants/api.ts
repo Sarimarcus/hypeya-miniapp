@@ -107,7 +107,7 @@ export const API_REQUESTS = {
       orderby: API_PARAMS.ORDER_BY.DATE,
       order: API_PARAMS.ORDER.DESC,
       _embed: true,
-      _fields: API_PARAMS.FIELDS.POSTS,
+      // _fields: API_PARAMS.FIELDS.POSTS, // Temporarily disabled to test embedded data
     },
   }),
   
@@ -122,7 +122,7 @@ export const API_REQUESTS = {
       orderby: API_PARAMS.ORDER_BY.DATE,
       order: API_PARAMS.ORDER.DESC,
       _embed: true,
-      _fields: API_PARAMS.FIELDS.POSTS,
+      // _fields: API_PARAMS.FIELDS.POSTS, // Temporarily disabled to test embedded data
     },
   }),
   
@@ -137,7 +137,7 @@ export const API_REQUESTS = {
       orderby: API_PARAMS.ORDER_BY.DATE,
       order: API_PARAMS.ORDER.DESC,
       _embed: true,
-      _fields: API_PARAMS.FIELDS.POSTS,
+      // _fields: API_PARAMS.FIELDS.POSTS, // Temporarily disabled to test embedded data
     },
   }),
   
@@ -152,7 +152,7 @@ export const API_REQUESTS = {
       orderby: API_PARAMS.ORDER_BY.DATE,
       order: API_PARAMS.ORDER.DESC,
       _embed: true,
-      _fields: API_PARAMS.FIELDS.POSTS,
+      // _fields: API_PARAMS.FIELDS.POSTS, // Temporarily disabled to test embedded data
     },
   }),
   
@@ -163,7 +163,7 @@ export const API_REQUESTS = {
       slug,
       status: API_PARAMS.STATUS.PUBLISH,
       _embed: true,
-      _fields: API_PARAMS.FIELDS.POSTS,
+      // _fields: API_PARAMS.FIELDS.POSTS, // Temporarily disabled to test embedded data
     },
   }),
   

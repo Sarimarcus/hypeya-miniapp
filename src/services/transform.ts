@@ -5,6 +5,7 @@ import {
   WordPressArticle, 
   WordPressCategory, 
   WordPressTag,
+  WordPressTerm,
   WordPressAuthor,
   WordPressMedia 
 } from '@/types/wordpress';
@@ -17,6 +18,17 @@ export class TransformService {
    * Transform WordPress article to application article format
    */
   static transformArticle(wpArticle: WordPressArticle): Article {
+    // Debug: Log the embedded data structure
+    console.log('WordPress Article:', {
+      id: wpArticle.id,
+      title: wpArticle.title.rendered,
+      hasEmbedded: !!wpArticle._embedded,
+      embeddedKeys: wpArticle._embedded ? Object.keys(wpArticle._embedded) : [],
+      author: wpArticle._embedded?.author?.[0],
+      featuredMedia: wpArticle._embedded?.['wp:featuredmedia']?.[0],
+      terms: wpArticle._embedded?.['wp:term']
+    });
+
     return {
       id: wpArticle.id,
       slug: wpArticle.slug,
@@ -29,8 +41,8 @@ export class TransformService {
       updatedAt: new Date(wpArticle.modified),
       author: this.transformAuthor(wpArticle._embedded?.author?.[0], wpArticle.author),
       featuredImage: this.transformFeaturedImage(wpArticle._embedded?.['wp:featuredmedia']?.[0]),
-      categories: this.transformCategories(wpArticle._embedded?.['wp:term']?.[0] || []),
-      tags: this.transformTags(wpArticle._embedded?.['wp:term']?.[1] || [])
+      categories: this.extractCategoriesFromEmbedded(wpArticle._embedded?.['wp:term']),
+      tags: this.extractTagsFromEmbedded(wpArticle._embedded?.['wp:term'])
     };
   }
 
@@ -41,19 +53,19 @@ export class TransformService {
     if (!wpAuthor) {
       return {
         id: authorId || 0,
-        name: 'Unknown Author',
-        slug: 'unknown',
+        name: 'Hypeya Team',
+        slug: 'hypeya-team', 
         description: '',
-        avatarUrl: undefined
+        avatarUrl: '/images/default-avatar.svg'
       };
     }
 
     return {
       id: wpAuthor.id,
-      name: wpAuthor.name || 'Unknown Author',
-      slug: wpAuthor.slug || 'unknown',
+      name: wpAuthor.name || 'Hypeya Team',
+      slug: wpAuthor.slug || 'hypeya-team',
       description: this.sanitizeHtml(wpAuthor.description || ''),
-      avatarUrl: wpAuthor.avatar_urls?.['96'] || wpAuthor.avatar_urls?.['48'] || undefined
+      avatarUrl: wpAuthor.avatar_urls?.['96'] || wpAuthor.avatar_urls?.['48'] || '/images/default-avatar.svg'
     };
   }
 
@@ -62,22 +74,72 @@ export class TransformService {
    */
   static transformFeaturedImage(wpMedia?: WordPressMedia): Article['featuredImage'] {
     if (!wpMedia) {
-      return undefined;
+      return {
+        id: 0,
+        url: '/images/default-featured.jpg',
+        alt: 'Default featured image',
+        width: 800,
+        height: 400,
+        sizes: {
+          thumbnail: '/images/default-featured.jpg',
+          medium: '/images/default-featured.jpg',
+          large: '/images/default-featured.jpg',
+          full: '/images/default-featured.jpg'
+        }
+      };
     }
 
     return {
       id: wpMedia.id,
       url: wpMedia.source_url,
       alt: wpMedia.alt_text || '',
-      width: wpMedia.media_details?.width || 0,
-      height: wpMedia.media_details?.height || 0,
+      width: wpMedia.media_details?.width || 800,
+      height: wpMedia.media_details?.height || 400,
       sizes: {
-        thumbnail: wpMedia.media_details?.sizes?.thumbnail?.source_url,
-        medium: wpMedia.media_details?.sizes?.medium?.source_url,
+        thumbnail: wpMedia.media_details?.sizes?.thumbnail?.source_url || wpMedia.source_url,
+        medium: wpMedia.media_details?.sizes?.medium?.source_url || wpMedia.source_url,
         large: wpMedia.media_details?.sizes?.large?.source_url || wpMedia.source_url,
         full: wpMedia.source_url
       }
     };
+  }
+
+  /**
+   * Extract categories from embedded wp:term data
+   * WordPress API can return terms in different structures
+   */
+  static extractCategoriesFromEmbedded(wpTermArrays?: WordPressTerm[][]): Category[] {
+    if (!wpTermArrays || !Array.isArray(wpTermArrays)) {
+      return [];
+    }
+
+    // Flatten all term arrays and filter for categories
+    const allTerms = wpTermArrays.flat();
+    return allTerms
+      .filter((term): term is WordPressTerm => 
+        typeof term === 'object' && term !== null && 
+        'taxonomy' in term && term.taxonomy === 'category'
+      )
+      .map(term => this.transformCategoryFromTerm(term));
+  }
+
+  /**
+   * Extract tags from embedded wp:term data
+   * WordPress API can return terms in different structures
+   */
+  static extractTagsFromEmbedded(wpTermArrays?: WordPressTerm[][]): Tag[] {
+    if (!wpTermArrays || !Array.isArray(wpTermArrays)) {
+      return [];
+    }
+
+    // Flatten all term arrays and filter for tags
+    const allTerms = wpTermArrays.flat();
+    return allTerms
+      .filter((term): term is WordPressTerm => 
+        typeof term === 'object' && term !== null && 
+        'taxonomy' in term && term.taxonomy === 'post_tag'
+      )
+      .map(term => this.transformTagFromTerm(term));
   }
 
   /**
@@ -89,11 +151,11 @@ export class TransformService {
     }
 
     return wpTerms
-      .filter((term): term is WordPressCategory => 
+      .filter((term): term is WordPressTerm => 
         typeof term === 'object' && term !== null && 
         'taxonomy' in term && term.taxonomy === 'category'
       )
-      .map(term => this.transformCategory(term));
+      .map(term => this.transformCategoryFromTerm(term));
   }
 
   /**
@@ -105,11 +167,11 @@ export class TransformService {
     }
 
     return wpTerms
-      .filter((term): term is WordPressTag => 
+      .filter((term): term is WordPressTerm => 
         typeof term === 'object' && term !== null && 
         'taxonomy' in term && term.taxonomy === 'post_tag'
       )
-      .map(term => this.transformTag(term));
+      .map(term => this.transformTagFromTerm(term));
   }
 
   /**
@@ -136,6 +198,33 @@ export class TransformService {
       slug: wpTag.slug || 'unknown',
       description: this.sanitizeHtml(wpTag.description || ''),
       count: wpTag.count || 0
+    };
+  }
+
+  /**
+   * Transform WordPressTerm to Category (from embedded data)
+   */
+  static transformCategoryFromTerm(wpTerm: WordPressTerm): Category {
+    return {
+      id: wpTerm.id,
+      name: wpTerm.name || 'Uncategorized',
+      slug: wpTerm.slug || 'uncategorized',
+      description: '',
+      count: 0,
+      color: this.getCategoryColor(wpTerm.slug || wpTerm.name)
+    };
+  }
+
+  /**
+   * Transform WordPressTerm to Tag (from embedded data)
+   */
+  static transformTagFromTerm(wpTerm: WordPressTerm): Tag {
+    return {
+      id: wpTerm.id,
+      name: wpTerm.name || 'Unknown Tag',
+      slug: wpTerm.slug || 'unknown',
+      description: '',
+      count: 0
     };
   }
 

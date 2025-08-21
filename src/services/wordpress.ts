@@ -5,7 +5,6 @@ import {
   API_CONFIG, 
   API_REQUESTS,
   API_ERRORS,
-  API_PARAMS,
   buildApiUrl 
 } from '@/constants/api';
 import { 
@@ -449,9 +448,9 @@ export class WordPressApiService {
         params.append('search', filters.search.trim());
       }
       
-      // Add embedded data and field selection for optimal performance
+      // Add embedded data for optimal performance
       params.append('_embed', 'true');
-      params.append('_fields', API_PARAMS.FIELDS.POSTS);
+      // params.append('_fields', API_PARAMS.FIELDS.POSTS); // Temporarily disabled to test embedded data
       
       // Order by date
       params.append('orderby', 'date');
