@@ -6,7 +6,13 @@ import { useEffect, useState } from "react";
 declare global {
   interface Window {
     coinbaseWallet?: unknown;
-    minikit?: unknown;
+    minikit?: {
+      sdk?: {
+        actions?: {
+          ready: () => void;
+        };
+      };
+    };
   }
 }
 
@@ -53,7 +59,6 @@ export function useMiniKit() {
  */
 export function useMiniKitAPI() {
   const isMiniKit = useMiniKit();
-
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -63,7 +68,15 @@ export function useMiniKitAPI() {
         const ready = !!(window.minikit || window.coinbaseWallet);
         setIsReady(ready);
 
-        if (!ready) {
+        if (ready && window.minikit?.sdk?.actions?.ready) {
+          // Call ready to dismiss splash screen
+          try {
+            window.minikit.sdk.actions.ready();
+            console.log("MiniKit ready() called successfully");
+          } catch (error) {
+            console.warn("Failed to call MiniKit ready():", error);
+          }
+        } else if (!ready) {
           // Retry after a short delay
           setTimeout(checkReady, 100);
         }

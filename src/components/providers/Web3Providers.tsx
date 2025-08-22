@@ -11,7 +11,7 @@ import { WagmiProvider } from 'wagmi';
 import { ReactNode } from 'react';
 
 import { wagmiConfig, onchainKitConfig } from '@/lib/web3';
-import { useMiniKit } from '@/hooks/useMiniKit';
+import { useMiniKit, useMiniKitAPI } from '@/hooks/useMiniKit';
 
 // Create a client for React Query (required by Wagmi)
 const queryClient = new QueryClient({
@@ -29,6 +29,8 @@ interface Web3ProvidersProps {
 
 export function Web3Providers({ children }: Web3ProvidersProps) {
   const isMiniKit = useMiniKit();
+  // Initialize MiniKit API - this will call ready() when MiniKit is detected
+  useMiniKitAPI();
 
   // If we're in MiniKit environment, use MiniKitProvider
   if (isMiniKit) {
