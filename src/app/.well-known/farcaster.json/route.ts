@@ -55,7 +55,7 @@ export async function GET() {
       ogImageUrl:
         process.env.NEXT_PUBLIC_APP_OG_IMAGE || `${URL}/images/hypeya-logo.png`,
       // use only while testing
-      noindex: true,
+      noindex: false,
     }),
   });
 }
