@@ -19,6 +19,9 @@ export async function GET() {
       payload: process.env.FARCASTER_PAYLOAD || "",
       signature: process.env.FARCASTER_SIGNATURE || "",
     },
+    baseBuilder: {
+      allowedAddresses: ["0x58dE0fd5594747DC08420C2a3A23f3539EB2385D"]
+    },
     frame: withValidProperties({
       version: "1",
       name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || "HYPEYA",
