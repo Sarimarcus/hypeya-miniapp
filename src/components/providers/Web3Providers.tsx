@@ -12,6 +12,7 @@ import { ReactNode } from 'react';
 
 import { wagmiConfig, onchainKitConfig } from '@/lib/web3';
 import { useMiniKit, useMiniKitAPI } from '@/hooks/useMiniKit';
+import { OnchainKitReady } from '@/components/OnchainKitReady';
 
 // Create a client for React Query (required by Wagmi)
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ export function Web3Providers({ children }: Web3ProvidersProps) {
             chain={onchainKitConfig.chain}
             schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
           >
+            <OnchainKitReady />
             {children}
           </MiniKitProvider>
         </QueryClientProvider>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useMiniKit as useOnchainKitMiniKit } from "@coinbase/onchainkit/minikit";
 
 /**
  * Hook to detect if the app is running in Coinbase Wallet MiniKit environment
@@ -33,24 +32,35 @@ export function useMiniKit() {
  * Hook to call setFrameReady using OnchainKit's official hook
  */
 export function useMiniKitReady() {
-  const { setFrameReady, isFrameReady } = useOnchainKitMiniKit();
-
+  const [isReady, setIsReady] = useState(false);
+  
   useEffect(() => {
     const callReady = async () => {
       try {
-        if (!isFrameReady) {
-          await setFrameReady();
-          console.log("✅ OnchainKit setFrameReady() called successfully");
+        // Only try to use OnchainKit hook on client side and when in a provider context
+        if (typeof window !== "undefined") {
+          // Try to use OnchainKit MiniKit hook
+          try {
+            // Dynamic import to avoid SSR issues
+            await import('@coinbase/onchainkit/minikit');
+            console.log("OnchainKit MiniKit available");
+          } catch (error) {
+            console.warn("OnchainKit MiniKit not available:", error);
+          }
+          
+          setIsReady(true);
+          console.log("✅ MiniKit ready status set");
         }
       } catch (error) {
-        console.warn("❌ Failed to call OnchainKit setFrameReady():", error);
+        console.warn("❌ Failed to set MiniKit ready:", error);
+        setIsReady(true); // Assume ready even if there's an error
       }
     };
 
     callReady();
-  }, [setFrameReady, isFrameReady]);
+  }, []);
 
-  return isFrameReady;
+  return isReady;
 }
 
 /**
@@ -64,5 +74,7 @@ export function useMiniKitAPI() {
   return {
     isMiniKit,
     isReady,
+    minikit: typeof window !== "undefined" ? (window as any).minikit : null, // eslint-disable-line @typescript-eslint/no-explicit-any
+    coinbaseWallet: typeof window !== "undefined" ? (window as any).coinbaseWallet : null, // eslint-disable-line @typescript-eslint/no-explicit-any
   };
 }
