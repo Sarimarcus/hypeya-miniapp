@@ -1,20 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-// Type declarations for MiniKit detection
-declare global {
-  interface Window {
-    coinbaseWallet?: unknown;
-    minikit?: unknown;
-    // Extended window types for MiniKit
-    sdk?: {
-      actions?: {
-        ready?: () => void;
-      };
-    };
-  }
-}
+import { useMiniKit as useOnchainKitMiniKit } from "@coinbase/onchainkit/minikit";
 
 /**
  * Hook to detect if the app is running in Coinbase Wallet MiniKit environment
@@ -26,23 +13,12 @@ export function useMiniKit() {
   useEffect(() => {
     const checkMiniKit = () => {
       if (typeof window !== "undefined") {
-        // Check for MiniKit specific properties
-        const hasWalletProvider = !!window.coinbaseWallet;
-        const hasMiniKitContext = !!window.minikit;
+        // Simple check: are we in an iframe (MiniKit environment)
+        const isInIframe = window.parent !== window;
         const userAgent = navigator.userAgent;
         const isCoinbaseWallet = userAgent.includes("CoinbaseWallet");
 
-        // Additional checks for MiniKit environment
-        const hasParentOrigin = window.parent !== window;
-        const hasPostMessageAPI =
-          typeof window.parent?.postMessage === "function";
-
-        return (
-          hasWalletProvider ||
-          hasMiniKitContext ||
-          isCoinbaseWallet ||
-          (hasParentOrigin && hasPostMessageAPI)
-        );
+        return isInIframe || isCoinbaseWallet;
       }
       return false;
     };
@@ -54,60 +30,27 @@ export function useMiniKit() {
 }
 
 /**
- * Hook to initialize MiniKit and call ready when appropriate
+ * Hook to call setFrameReady using OnchainKit's official hook
  */
 export function useMiniKitReady() {
-  const [isReady, setIsReady] = useState(false);
+  const { setFrameReady, isFrameReady } = useOnchainKitMiniKit();
 
   useEffect(() => {
-    // Simple approach: call ready using window.postMessage for MiniKit
-    const initializeMiniKit = () => {
+    const callReady = async () => {
       try {
-        // Method 1: Use postMessage to communicate with parent (Coinbase Wallet)
-        if (typeof window !== "undefined" && window.parent !== window) {
-          window.parent.postMessage({ type: 'minikit_ready' }, '*');
-          console.log("MiniKit ready message sent via postMessage");
+        if (!isFrameReady) {
+          await setFrameReady();
+          console.log("✅ OnchainKit setFrameReady() called successfully");
         }
-
-        // Method 2: Try window-based ready functions
-        const readyFunctions = [
-          window.sdk?.actions?.ready,
-          (window as any).minikit?.ready, // eslint-disable-line @typescript-eslint/no-explicit-any
-          (window as any).coinbaseWallet?.ready // eslint-disable-line @typescript-eslint/no-explicit-any
-        ];
-
-        for (const readyFn of readyFunctions) {
-          if (typeof readyFn === 'function') {
-            try {
-              readyFn();
-              console.log("Window-based ready() called successfully");
-              setIsReady(true);
-              return;
-            } catch (err) {
-              console.warn("Failed to call window-based ready():", err);
-            }
-          }
-        }
-
-        // Method 3: Try to use document events
-        const readyEvent = new CustomEvent('minikit-ready');
-        document.dispatchEvent(readyEvent);
-        console.log("MiniKit ready event dispatched");
-        
-        setIsReady(true);
       } catch (error) {
-        console.warn("Failed to initialize MiniKit ready():", error);
+        console.warn("❌ Failed to call OnchainKit setFrameReady():", error);
       }
     };
 
-    // Call immediately and with delays to ensure it's picked up
-    initializeMiniKit();
-    setTimeout(initializeMiniKit, 100);
-    setTimeout(initializeMiniKit, 500);
-    setTimeout(initializeMiniKit, 1000);
-  }, []);
+    callReady();
+  }, [setFrameReady, isFrameReady]);
 
-  return isReady;
+  return isFrameReady;
 }
 
 /**
@@ -121,8 +64,5 @@ export function useMiniKitAPI() {
   return {
     isMiniKit,
     isReady,
-    minikit: typeof window !== "undefined" ? window.minikit : null,
-    coinbaseWallet:
-      typeof window !== "undefined" ? window.coinbaseWallet : null,
   };
 }
