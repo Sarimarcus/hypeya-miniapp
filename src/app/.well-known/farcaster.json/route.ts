@@ -21,6 +21,8 @@ export async function GET() {
       name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || "HYPEYA",
       subtitle: process.env.NEXT_PUBLIC_APP_SUBTITLE || "Tendencias virales y memes",
       description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || "¡Descubre lo más viral y actual en ¡HYPEYA!: memes, tendencias y cultura web fresca para que siempre estés a la vanguardia.",
+      imageUrl: process.env.NEXT_PUBLIC_APP_OG_IMAGE || `${URL}/images/hypeya-logo.png`,
+      aspectRatio: "2.96:1", // Custom aspect ratio for HYPEYA logo (269x91)
       screenshotUrls: [],
       iconUrl: process.env.NEXT_PUBLIC_APP_ICON || `${URL}/images/hypeya-logo.png`,
       splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE || `${URL}/images/hypeya-logo.png`,
