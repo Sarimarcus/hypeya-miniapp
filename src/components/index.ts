@@ -2,14 +2,14 @@
 // Clean barrel exports for all UI components
 
 // Common components
-export * from './common/LoadingSpinner';
-export * from './common/ErrorMessage';
-export * from './common/OptimizedImage';
+export * from "./common/LoadingSpinner";
+export * from "./common/ErrorMessage";
+export * from "./common/OptimizedImage";
 
 // Article components
-export * from './articles/ArticleCard';
+export * from "./articles/ArticleCard";
 
 // UI components (Shadcn/ui)
-export * from './ui/button';
-export * from './ui/card';
-export * from './ui/badge';
+export * from "./ui/button";
+export * from "./ui/card";
+export * from "./ui/badge";

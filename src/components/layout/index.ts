@@ -1,7 +1,6 @@
 // Layout components
-// Will be populated as we create layout components
+export { default as Header } from "./Header";
 
-// Example barrel export (will be uncommented as components are created):
-// export { Header } from './Header';
+// Will be populated as we create more layout components
 // export { Footer } from './Footer';
 // export { Navigation } from './Navigation';

@@ -52,7 +52,7 @@ export function OptimizedImage({
 
   if (imageError) {
     return (
-      <div 
+      <div
         className={cn(
           'flex items-center justify-center bg-gray-100 text-gray-400',
           className
@@ -69,7 +69,7 @@ export function OptimizedImage({
   return (
     <>
       {isLoading && (
-        <div 
+        <div
           className={cn(
             'absolute inset-0 animate-pulse bg-gray-200 rounded',
             className
@@ -178,7 +178,7 @@ export function AvatarImage({
 
   if (!src) {
     return (
-      <div 
+      <div
         className={cn(
           'flex items-center justify-center bg-gray-200 rounded-full text-gray-500',
           sizeClasses[size],

@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { SearchBar, Filters } from '@/components/search';
@@ -79,16 +78,9 @@ export default function HomePage() {
           <main id="main-content" className="container mx-auto px-4 py-8">
         {/* Hero Section with Search */}
         <section className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/images/hypeya-logo.png"
-              alt="HYPEYA Logo"
-              width={200}
-              height={80}
-              className="h-16 md:h-20 w-auto"
-              priority
-            />
-          </div>
+          <h1 className="text-3xl md:text-4xl font-title font-bold text-gray-900 mb-4">
+            Descubre la innovación tecnológica
+          </h1>
           <p className="text-xl font-content text-gray-600 max-w-2xl mx-auto mb-6">
             Descubre los últimos artículos, ideas e historias de nuestra comunidad
           </p>
@@ -111,9 +103,9 @@ export default function HomePage() {
           >
             {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
             {hasActiveFilters && (
-              <Badge 
-                variant="default" 
-                className="ml-2 text-white" 
+              <Badge
+                variant="default"
+                className="ml-2 text-white"
                 style={{ backgroundColor: '#6a40f2' }}
                 aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
               >
@@ -202,7 +194,12 @@ export default function HomePage() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="feed" aria-label="Lista de artículos">
                 {articles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    showTipCreator={true}
+                    showTags={true}
+                  />
                 ))}
               </div>
 

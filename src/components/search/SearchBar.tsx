@@ -17,8 +17,8 @@ interface SearchBarProps {
   compact?: boolean;
 }
 
-export function SearchBar({ 
-  onAdvancedSearch, 
+export function SearchBar({
+  onAdvancedSearch,
   placeholder = "Buscar artículos...",
   className,
   compact = false
@@ -90,7 +90,7 @@ export function SearchBar({
           isFocused ? "ring-2 ring-blue-500" : "ring-1 ring-gray-300",
           "rounded-lg bg-white"
         )}>
-          <Search 
+          <Search
             className={cn(
               "absolute left-3 text-gray-400 transition-colors",
               compact ? "h-4 w-4" : "h-5 w-5",
@@ -98,7 +98,7 @@ export function SearchBar({
             )}
             aria-hidden="true"
           />
-          
+
           <input
             ref={inputRef}
             type="text"
@@ -154,7 +154,7 @@ export function SearchBar({
 
       {/* Search Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
-        <div 
+        <div
           id="search-suggestions"
           className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
           role="listbox"
@@ -210,7 +210,7 @@ export function SearchBar({
                 </div>
               </button>
             ))}
-            
+
             {query && (
               <button
                 onClick={() => handleSuggestionClick(query)}

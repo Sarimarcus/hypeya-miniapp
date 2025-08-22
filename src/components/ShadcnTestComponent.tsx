@@ -4,7 +4,7 @@ export default function ShadcnTestComponent() {
   return (
     <div className="container p-4 space-y-4">
       <h2 className="text-lg font-bold mb-4">Shadcn/ui Button Test</h2>
-      
+
       <div className="grid gap-4">
         {/* Test different button variants */}
         <div className="space-y-2">
@@ -18,7 +18,7 @@ export default function ShadcnTestComponent() {
             <Button variant="destructive">Destructive</Button>
           </div>
         </div>
-        
+
         {/* Test different button sizes */}
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">Button Sizes:</p>
@@ -29,7 +29,7 @@ export default function ShadcnTestComponent() {
             <Button size="icon">🔥</Button>
           </div>
         </div>
-        
+
         {/* Test mobile-friendly button */}
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">Mobile-Optimized:</p>

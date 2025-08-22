@@ -1,50 +1,61 @@
 // React hooks for data fetching
 // Custom hooks for WordPress API integration with loading states
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Article } from '@/types/article';
-import { Category } from '@/types/category';
-import { Tag } from '@/types/tag';
-import { LoadingState } from '@/types/api';
-import { WordPressApiService } from '@/services/wordpress';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Article } from "@/types/article";
+import { Category } from "@/types/category";
+import { Tag } from "@/types/tag";
+import { LoadingState } from "@/types/api";
+import { WordPressApiService } from "@/services/wordpress";
 
 // Article hook with pagination
 export function useArticles(initialPage: number = 1, perPage: number = 10) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
   const [pagination, setPagination] = useState({
     currentPage: initialPage,
     hasMore: true,
-    total: 0
+    total: 0,
   });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
-  const fetchArticles = useCallback(async (page: number = 1, reset: boolean = false) => {
-    setLoading({ loading: true, error: null });
+  const fetchArticles = useCallback(
+    async (page: number = 1, reset: boolean = false) => {
+      setLoading({ loading: true, error: null });
 
-    try {
-      const response = await apiService.getLatestArticles(page, perPage);
-      
-      if (response.success) {
-        setArticles(prev => reset ? response.data : [...prev, ...response.data]);
-        setPagination({
-          currentPage: page,
-          hasMore: response.data.length === perPage,
-          total: response.pagination?.totalItems || response.data.length
+      try {
+        const response = await apiService.getLatestArticles(page, perPage);
+
+        if (response.success) {
+          setArticles((prev) =>
+            reset ? response.data : [...prev, ...response.data]
+          );
+          setPagination({
+            currentPage: page,
+            hasMore: response.data.length === perPage,
+            total: response.pagination?.totalItems || response.data.length,
+          });
+        } else {
+          setLoading({
+            loading: false,
+            error: response.message || "Failed to load articles",
+          });
+        }
+      } catch (error) {
+        setLoading({
+          loading: false,
+          error: error instanceof Error ? error.message : "An error occurred",
         });
-      } else {
-        setLoading({ loading: false, error: response.message || 'Failed to load articles' });
+      } finally {
+        setLoading((prev) => ({ ...prev, loading: false }));
       }
-    } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
-    }
-  }, [apiService, perPage]);
+    },
+    [apiService, perPage]
+  );
 
   const loadMore = useCallback(() => {
     if (!loading.loading && pagination.hasMore) {
@@ -66,14 +77,17 @@ export function useArticles(initialPage: number = 1, perPage: number = 10) {
     error: loading.error,
     pagination,
     loadMore,
-    refresh
+    refresh,
   };
 }
 
 // Categories hook
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
@@ -82,19 +96,22 @@ export function useCategories() {
 
     try {
       const response = await apiService.getCategories();
-      
+
       if (response.success) {
         setCategories(response.data);
       } else {
-        setLoading({ loading: false, error: response.message || 'Failed to load categories' });
+        setLoading({
+          loading: false,
+          error: response.message || "Failed to load categories",
+        });
       }
     } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
+      setLoading({
+        loading: false,
+        error: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
+      setLoading((prev) => ({ ...prev, loading: false }));
     }
   }, [apiService]);
 
@@ -110,14 +127,17 @@ export function useCategories() {
     categories,
     loading: loading.loading,
     error: loading.error,
-    refresh
+    refresh,
   };
 }
 
 // Tags hook
 export function useTags() {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
@@ -126,19 +146,22 @@ export function useTags() {
 
     try {
       const response = await apiService.getTags();
-      
+
       if (response.success) {
         setTags(response.data);
       } else {
-        setLoading({ loading: false, error: response.message || 'Failed to load tags' });
+        setLoading({
+          loading: false,
+          error: response.message || "Failed to load tags",
+        });
       }
     } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
+      setLoading({
+        loading: false,
+        error: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
+      setLoading((prev) => ({ ...prev, loading: false }));
     }
   }, [apiService]);
 
@@ -154,54 +177,74 @@ export function useTags() {
     tags,
     loading: loading.loading,
     error: loading.error,
-    refresh
+    refresh,
   };
 }
 
 // Articles by category hook (simplified version)
-export function useArticlesByCategory(categoryId: number, page: number = 1, perPage: number = 10) {
+export function useArticlesByCategory(
+  categoryId: number,
+  page: number = 1,
+  perPage: number = 10
+) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
   const [pagination, setPagination] = useState({
     currentPage: page,
     hasMore: true,
-    total: 0
+    total: 0,
   });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
-  const fetchArticles = useCallback(async (pageNum: number = 1, reset: boolean = false) => {
-    if (!categoryId) return;
+  const fetchArticles = useCallback(
+    async (pageNum: number = 1, reset: boolean = false) => {
+      if (!categoryId) return;
 
-    setLoading({ loading: true, error: null });
+      setLoading({ loading: true, error: null });
 
-    try {
-      // Get all articles and filter client-side for now
-      const allArticlesResponse = await apiService.getLatestArticles(pageNum, perPage * 2); // Get more to account for filtering
-      
-      if (allArticlesResponse.success) {
-        const filteredArticles = allArticlesResponse.data.filter((article: Article) =>
-          article.categories.some((cat: Category) => cat.id === categoryId)
-        ).slice(0, perPage); // Limit to requested page size
+      try {
+        // Get all articles and filter client-side for now
+        const allArticlesResponse = await apiService.getLatestArticles(
+          pageNum,
+          perPage * 2
+        ); // Get more to account for filtering
 
-        setArticles(prev => reset ? filteredArticles : [...prev, ...filteredArticles]);
-        setPagination({
-          currentPage: pageNum,
-          hasMore: filteredArticles.length === perPage,
-          total: filteredArticles.length
+        if (allArticlesResponse.success) {
+          const filteredArticles = allArticlesResponse.data
+            .filter((article: Article) =>
+              article.categories.some((cat: Category) => cat.id === categoryId)
+            )
+            .slice(0, perPage); // Limit to requested page size
+
+          setArticles((prev) =>
+            reset ? filteredArticles : [...prev, ...filteredArticles]
+          );
+          setPagination({
+            currentPage: pageNum,
+            hasMore: filteredArticles.length === perPage,
+            total: filteredArticles.length,
+          });
+        } else {
+          setLoading({
+            loading: false,
+            error: allArticlesResponse.message || "Failed to load articles",
+          });
+        }
+      } catch (error) {
+        setLoading({
+          loading: false,
+          error: error instanceof Error ? error.message : "An error occurred",
         });
-      } else {
-        setLoading({ loading: false, error: allArticlesResponse.message || 'Failed to load articles' });
+      } finally {
+        setLoading((prev) => ({ ...prev, loading: false }));
       }
-    } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
-    }
-  }, [apiService, categoryId, perPage]);
+    },
+    [apiService, categoryId, perPage]
+  );
 
   const loadMore = useCallback(() => {
     if (!loading.loading && pagination.hasMore) {
@@ -225,14 +268,17 @@ export function useArticlesByCategory(categoryId: number, page: number = 1, perP
     error: loading.error,
     pagination,
     loadMore,
-    refresh
+    refresh,
   };
 }
 
 // Single article hook (simplified version)
 export function useArticle(id?: number, slug?: string) {
   const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
@@ -244,31 +290,38 @@ export function useArticle(id?: number, slug?: string) {
     try {
       // Get all articles and find by ID or slug
       const allArticlesResponse = await apiService.getLatestArticles(1, 100);
-      
+
       if (allArticlesResponse.success) {
         let foundArticle: Article | undefined;
-        
+
         if (id) {
-          foundArticle = allArticlesResponse.data.find((a: Article) => a.id === id);
+          foundArticle = allArticlesResponse.data.find(
+            (a: Article) => a.id === id
+          );
         } else if (slug) {
-          foundArticle = allArticlesResponse.data.find((a: Article) => a.slug === slug);
+          foundArticle = allArticlesResponse.data.find(
+            (a: Article) => a.slug === slug
+          );
         }
 
         if (foundArticle) {
           setArticle(foundArticle);
         } else {
-          setLoading({ loading: false, error: 'Article not found' });
+          setLoading({ loading: false, error: "Article not found" });
         }
       } else {
-        setLoading({ loading: false, error: allArticlesResponse.message || 'Failed to load article' });
+        setLoading({
+          loading: false,
+          error: allArticlesResponse.message || "Failed to load article",
+        });
       }
     } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
+      setLoading({
+        loading: false,
+        error: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
+      setLoading((prev) => ({ ...prev, loading: false }));
     }
   }, [apiService, id, slug]);
 
@@ -286,57 +339,70 @@ export function useArticle(id?: number, slug?: string) {
     article,
     loading: loading.loading,
     error: loading.error,
-    refresh
+    refresh,
   };
 }
 
 // Search hook
 export function useSearch() {
   const [results, setResults] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
-  const [query, setQuery] = useState<string>('');
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
+  const [query, setQuery] = useState<string>("");
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
-  const search = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setResults([]);
-      setQuery('');
-      return;
-    }
-
-    setLoading({ loading: true, error: null });
-    setQuery(searchQuery);
-
-    try {
-      // Get more articles to ensure we have enough matches, but limit final results
-      const allArticlesResponse = await apiService.getLatestArticles(1, 100);
-      
-      if (allArticlesResponse.success) {
-        const filteredArticles = allArticlesResponse.data.filter((article: Article) =>
-          article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.content.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-        // Limit search results to 20 articles
-        setResults(filteredArticles.slice(0, 20));
-      } else {
-        setLoading({ loading: false, error: allArticlesResponse.message || 'Search failed' });
+  const search = useCallback(
+    async (searchQuery: string) => {
+      if (!searchQuery.trim()) {
+        setResults([]);
+        setQuery("");
+        return;
       }
-    } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Search error occurred' 
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
-    }
-  }, [apiService]);
+
+      setLoading({ loading: true, error: null });
+      setQuery(searchQuery);
+
+      try {
+        // Get more articles to ensure we have enough matches, but limit final results
+        const allArticlesResponse = await apiService.getLatestArticles(1, 100);
+
+        if (allArticlesResponse.success) {
+          const filteredArticles = allArticlesResponse.data.filter(
+            (article: Article) =>
+              article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              article.excerpt
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              article.content.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          // Limit search results to 20 articles
+          setResults(filteredArticles.slice(0, 20));
+        } else {
+          setLoading({
+            loading: false,
+            error: allArticlesResponse.message || "Search failed",
+          });
+        }
+      } catch (error) {
+        setLoading({
+          loading: false,
+          error:
+            error instanceof Error ? error.message : "Search error occurred",
+        });
+      } finally {
+        setLoading((prev) => ({ ...prev, loading: false }));
+      }
+    },
+    [apiService]
+  );
 
   const clearSearch = useCallback(() => {
     setResults([]);
-    setQuery('');
+    setQuery("");
     setLoading({ loading: false, error: null });
   }, []);
 
@@ -346,7 +412,7 @@ export function useSearch() {
     error: loading.error,
     query,
     search,
-    clearSearch
+    clearSearch,
   };
 }
 
@@ -357,80 +423,102 @@ export function useFilteredArticles(
     tags?: number[];
     search?: string;
   },
-  initialPage: number = 1, 
+  initialPage: number = 1,
   perPage: number = 10
 ) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<LoadingState>({ loading: false, error: null });
+  const [loading, setLoading] = useState<LoadingState>({
+    loading: false,
+    error: null,
+  });
   const [pagination, setPagination] = useState({
     currentPage: initialPage,
     hasMore: true,
-    total: 0
+    total: 0,
   });
 
   const apiService = useMemo(() => new WordPressApiService(), []);
 
   // Check if any filters are active
   const hasActiveFilters = useMemo(() => {
-    return (filters.categories && filters.categories.length > 0) ||
-           (filters.tags && filters.tags.length > 0) ||
-           (filters.search && filters.search.trim().length > 0);
+    return (
+      (filters.categories && filters.categories.length > 0) ||
+      (filters.tags && filters.tags.length > 0) ||
+      (filters.search && filters.search.trim().length > 0)
+    );
   }, [filters]);
 
-  const fetchFilteredArticles = useCallback(async (page: number = 1, reset: boolean = false) => {
-    // If no filters are active, use the regular getLatestArticles method
-    if (!hasActiveFilters) {
+  const fetchFilteredArticles = useCallback(
+    async (page: number = 1, reset: boolean = false) => {
+      // If no filters are active, use the regular getLatestArticles method
+      if (!hasActiveFilters) {
+        setLoading({ loading: true, error: null });
+
+        try {
+          const response = await apiService.getLatestArticles(page, perPage);
+
+          if (response.success) {
+            setArticles((prev) =>
+              reset ? response.data : [...prev, ...response.data]
+            );
+            setPagination({
+              currentPage: page,
+              hasMore: response.data.length === perPage,
+              total: response.pagination?.totalItems || response.data.length,
+            });
+          } else {
+            setLoading({
+              loading: false,
+              error: response.message || "Failed to load articles",
+            });
+          }
+        } catch (error) {
+          setLoading({
+            loading: false,
+            error: error instanceof Error ? error.message : "An error occurred",
+          });
+        } finally {
+          setLoading((prev) => ({ ...prev, loading: false }));
+        }
+        return;
+      }
+
+      // Use filtered API call when filters are active
       setLoading({ loading: true, error: null });
 
       try {
-        const response = await apiService.getLatestArticles(page, perPage);
-        
+        const response = await apiService.getFilteredArticles(
+          filters,
+          page,
+          perPage
+        );
+
         if (response.success) {
-          setArticles(prev => reset ? response.data : [...prev, ...response.data]);
+          setArticles((prev) =>
+            reset ? response.data : [...prev, ...response.data]
+          );
           setPagination({
             currentPage: page,
             hasMore: response.data.length === perPage,
-            total: response.pagination?.totalItems || response.data.length
+            total: response.pagination?.totalItems || response.data.length,
           });
         } else {
-          setLoading({ loading: false, error: response.message || 'Failed to load articles' });
+          setLoading({
+            loading: false,
+            error: response.message || "Failed to load filtered articles",
+          });
         }
       } catch (error) {
-        setLoading({ 
-          loading: false, 
-          error: error instanceof Error ? error.message : 'An error occurred' 
+        setLoading({
+          loading: false,
+          error: error instanceof Error ? error.message : "An error occurred",
         });
       } finally {
-        setLoading(prev => ({ ...prev, loading: false }));
+        setLoading((prev) => ({ ...prev, loading: false }));
       }
-      return;
-    }
-
-    // Use filtered API call when filters are active
-    setLoading({ loading: true, error: null });
-
-    try {
-      const response = await apiService.getFilteredArticles(filters, page, perPage);
-      
-      if (response.success) {
-        setArticles(prev => reset ? response.data : [...prev, ...response.data]);
-        setPagination({
-          currentPage: page,
-          hasMore: response.data.length === perPage,
-          total: response.pagination?.totalItems || response.data.length
-        });
-      } else {
-        setLoading({ loading: false, error: response.message || 'Failed to load filtered articles' });
-      }
-    } catch (error) {
-      setLoading({ 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'An error occurred' 
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, loading: false }));
-    }
-  }, [apiService, perPage, filters, hasActiveFilters]);
+    },
+    [apiService, perPage, filters, hasActiveFilters]
+  );
 
   const loadMore = useCallback(() => {
     if (!loading.loading && pagination.hasMore) {
@@ -458,6 +546,6 @@ export function useFilteredArticles(
     pagination,
     loadMore,
     refresh,
-    hasActiveFilters
+    hasActiveFilters,
   };
 }

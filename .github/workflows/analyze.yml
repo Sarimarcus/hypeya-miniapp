@@ -16,8 +16,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -25,7 +25,7 @@ jobs:
       - name: Build with bundle analyzer (webpack)
         run: npm run analyze:bundle
         env:
-          ANALYZE: 'true'
+          ANALYZE: "true"
 
       - name: Upload analyzer reports
         uses: actions/upload-artifact@v4
@@ -34,4 +34,3 @@ jobs:
           path: .next/analyze/
           if-no-files-found: error
           retention-days: 14
-

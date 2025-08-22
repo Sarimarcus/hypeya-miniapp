@@ -1,0 +1,17 @@
+/* OnchainKit Styles - Isolated Import */
+@import "@coinbase/onchainkit/styles.css";
+
+/* Minimal, targeted overrides to prevent conflicts with HYPEYA UI */
+@layer onchainkit-overrides {
+  /* Ensure OnchainKit only affects its own components */
+  [class*="ock"] {
+    /* OnchainKit components should use their own styling */
+    font-family: inherit;
+  }
+
+  /* Prevent OnchainKit from affecting global button styles */
+  button:not([class*="ock"]):not([data-onchainkit]) {
+    /* Let Tailwind and custom styles handle non-OnchainKit buttons */
+    all: revert-layer;
+  }
+}

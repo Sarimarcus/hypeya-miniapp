@@ -12,4 +12,4 @@
 // import { Article } from '@/types/article'
 // import { Category } from '@/types/category'
 
-export * from './wordpress';
+export * from "./wordpress";

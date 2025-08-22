@@ -34,7 +34,7 @@ export default function GlobalError({
 
             <CardContent className="space-y-4">
               <div className="flex flex-col space-y-2">
-                <Button 
+                <Button
                   onClick={reset}
                   className="w-full"
                   variant="default"
@@ -42,7 +42,7 @@ export default function GlobalError({
                   Reiniciar aplicación
                 </Button>
 
-                <Button 
+                <Button
                   onClick={handleGoHome}
                   variant="outline"
                   className="w-full"

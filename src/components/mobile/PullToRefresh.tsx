@@ -28,7 +28,7 @@ export function PullToRefresh({
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [canPull, setCanPull] = useState(false);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef<number>(0);
   const currentYRef = useRef<number>(0);
@@ -38,7 +38,7 @@ export function PullToRefresh({
   // Check if we can start pulling (at top of page)
   const checkCanPull = useCallback(() => {
     if (!containerRef.current) return false;
-    
+
     const scrollTop = containerRef.current.scrollTop || window.scrollY;
     return scrollTop <= 0;
   }, []);
@@ -46,10 +46,10 @@ export function PullToRefresh({
   // Handle touch start
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (disabled || isRefreshing) return;
-    
+
     const canStartPull = checkCanPull();
     setCanPull(canStartPull);
-    
+
     if (canStartPull) {
       startYRef.current = e.touches[0].clientY;
       currentYRef.current = startYRef.current;
@@ -61,29 +61,29 @@ export function PullToRefresh({
   // Handle touch move
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (disabled || isRefreshing || !isPulling || !canPull) return;
-    
+
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - startYRef.current;
-    
+
     // Only pull down when at the top
     if (deltaY > 0 && checkCanPull()) {
       e.preventDefault();
-      
+
       // Calculate velocity for smoother experience
       const now = Date.now();
       const timeDelta = now - lastTimeRef.current;
       const positionDelta = currentY - currentYRef.current;
-      
+
       if (timeDelta > 0) {
         velocityRef.current = positionDelta / timeDelta;
       }
-      
+
       // Apply easing to pull distance
       const easedDistance = Math.min(
         deltaY * 0.5, // Damping factor
         maxPullDistance
       );
-      
+
       setPullDistance(easedDistance);
       currentYRef.current = currentY;
       lastTimeRef.current = now;
@@ -93,14 +93,14 @@ export function PullToRefresh({
   // Handle touch end
   const handleTouchEnd = useCallback(async () => {
     if (disabled || isRefreshing || !isPulling) return;
-    
+
     setIsPulling(false);
     setCanPull(false);
-    
+
     // Trigger refresh if pulled beyond threshold
     if (pullDistance >= threshold) {
       setIsRefreshing(true);
-      
+
       try {
         await onRefresh();
       } catch (error) {
@@ -109,7 +109,7 @@ export function PullToRefresh({
         setIsRefreshing(false);
       }
     }
-    
+
     // Reset pull distance with animation
     setPullDistance(0);
   }, [disabled, isRefreshing, isPulling, pullDistance, threshold, onRefresh]);
@@ -205,9 +205,9 @@ export function usePullToRefresh(refreshFn: () => Promise<void>) {
 
   const refresh = useCallback(async () => {
     if (isRefreshing) return;
-    
+
     setIsRefreshing(true);
-    
+
     try {
       await refreshFn();
       setLastRefresh(new Date());

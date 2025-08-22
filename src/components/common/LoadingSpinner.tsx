@@ -9,14 +9,14 @@ interface LoadingSpinnerProps {
   text?: string;
 }
 
-export function LoadingSpinner({ 
-  size = 'md', 
+export function LoadingSpinner({
+  size = 'md',
   className,
-  text 
+  text
 }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'w-4 h-4',
-    md: 'w-8 h-8', 
+    md: 'w-8 h-8',
     lg: 'w-12 h-12'
   };
 
@@ -32,7 +32,7 @@ export function LoadingSpinner({
       className
     )}>
       {/* Spinner */}
-      <div 
+      <div
         className={cn(
           'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
           sizeClasses[size]
@@ -40,7 +40,7 @@ export function LoadingSpinner({
         role="status"
         aria-label="Cargando"
       />
-      
+
       {/* Loading text */}
       {text && (
         <p className={cn(
@@ -50,7 +50,7 @@ export function LoadingSpinner({
           {text}
         </p>
       )}
-      
+
       {/* Screen reader text */}
       <span className="sr-only">Cargando contenido...</span>
     </div>
@@ -58,9 +58,9 @@ export function LoadingSpinner({
 }
 
 // Inline spinner for buttons and small spaces
-export function InlineSpinner({ 
+export function InlineSpinner({
   size = 'sm',
-  className 
+  className
 }: Pick<LoadingSpinnerProps, 'size' | 'className'>) {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -69,7 +69,7 @@ export function InlineSpinner({
   };
 
   return (
-    <div 
+    <div
       className={cn(
         'animate-spin rounded-full border-2 border-gray-300 border-t-current',
         sizeClasses[size],
@@ -84,17 +84,17 @@ export function InlineSpinner({
 }
 
 // Skeleton loader for content placeholders
-export function SkeletonLoader({ 
+export function SkeletonLoader({
   className,
-  lines = 3 
-}: { 
+  lines = 3
+}: {
   className?: string;
   lines?: number;
 }) {
   return (
     <div className={cn('animate-pulse space-y-3', className)}>
       {Array.from({ length: lines }).map((_, index) => (
-        <div 
+        <div
           key={index}
           className={cn(
             'h-4 bg-gray-200 rounded',

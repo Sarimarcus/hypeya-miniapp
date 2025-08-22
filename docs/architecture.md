@@ -1,4 +1,4 @@
-# Hypeya NextJS Mini-App Architecture
+# Hypeya Next.js Mini‑App Architecture
 
 ## Project Overview
 
@@ -6,138 +6,46 @@ A NextJS application that displays the latest articles from the Hypeya.xyz WordP
 
 ## Tech Stack
 
-- **Framework**: NextJS 14+ (App Router)
-- **UI Library**: Shadcn/ui + Tailwind CSS
-- **Data Fetching**: WordPress REST API
-- **State Management**: React Context + useReducer / Zustand (for complex state)
+- **Framework**: Next.js 15 (App Router)
+- **UI Library**: shadcn/ui + Tailwind CSS 4
+- **Data**: WordPress REST API (`/wp-json/wp/v2`)
+- **State Management**: React hooks + TanStack Query (where applicable)
 - **Styling**: Tailwind CSS
 - **TypeScript**: Full TypeScript implementation
-- **Package Manager**: npm/yarn/pnpm
+- **Package Manager**: npm
 
-## File & Folder Structure
+## File & Folder Structure (current)
 
 ```
 hypeya-miniapp/
 ├── README.md
-├── next.config.js
-├── package.json
-├── tailwind.config.js
+├── next.config.ts
+├── tailwind.config.ts
 ├── tsconfig.json
-├── components.json                 # Shadcn/ui config
-│
-├── src/
-│   ├── app/                       # App Router pages
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   ├── page.tsx               # Home page (latest articles)
-│   │   ├── loading.tsx
-│   │   ├── error.tsx
-│   │   ├── not-found.tsx
-│   │   │
-│   │   ├── article/
-│   │   │   └── [slug]/
-│   │   │       ├── page.tsx       # Individual article page
-│   │   │       ├── loading.tsx
-│   │   │       └── error.tsx
-│   │   │
-│   │   ├── category/
-│   │   │   └── [slug]/
-│   │   │       ├── page.tsx       # Category filtered articles
-│   │   │       ├── loading.tsx
-│   │   │       └── error.tsx
-│   │   │
-│   │   └── api/                   # API routes (if needed)
-│   │       ├── articles/
-│   │       │   └── route.ts
-│   │       ├── categories/
-│   │       │   └── route.ts
-│   │       └── tags/
-│   │           └── route.ts
-│   │
-│   ├── components/                # Reusable UI components
-│   │   ├── ui/                    # Shadcn/ui components
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
-│   │   │   ├── badge.tsx
-│   │   │   ├── input.tsx
-│   │   │   ├── select.tsx
-│   │   │   ├── skeleton.tsx
-│   │   │   ├── pagination.tsx
-│   │   │   └── ...                # Other Shadcn/ui components
-│   │   │
-│   │   ├── layout/                # Layout components
-│   │   │   ├── Header.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Navigation.tsx
-│   │   │   └── Sidebar.tsx
-│   │   │
-│   │   ├── articles/              # Article-related components
-│   │   │   ├── ArticleCard.tsx
-│   │   │   ├── ArticleList.tsx
-│   │   │   ├── ArticleGrid.tsx
-│   │   │   ├── ArticleDetail.tsx
-│   │   │   ├── ArticleContent.tsx
-│   │   │   ├── ArticleMeta.tsx
-│   │   │   └── FeaturedArticle.tsx
-│   │   │
-│   │   ├── filters/               # Filter components
-│   │   │   ├── CategoryFilter.tsx
-│   │   │   ├── TagFilter.tsx
-│   │   │   ├── SearchBox.tsx
-│   │   │   ├── FilterBar.tsx
-│   │   │   └── SortSelector.tsx
-│   │   │
-│   │   └── common/                # Common components
-│   │       ├── LoadingSpinner.tsx
-│   │       ├── ErrorMessage.tsx
-│   │       ├── EmptyState.tsx
-│   │       ├── ImageWithFallback.tsx
-│   │       └── DateFormatter.tsx
-│   │
-│   ├── lib/                       # Utility functions & configurations
-│   │   ├── utils.ts               # General utilities (cn helper, etc.)
-│   │   ├── wordpress-api.ts       # WordPress API client
-│   │   ├── constants.ts           # App constants
-│   │   ├── validations.ts         # Data validation schemas
-│   │   └── date-utils.ts          # Date formatting utilities
-│   │
-│   ├── types/                     # TypeScript type definitions
-│   │   ├── wordpress.ts           # WordPress API types
-│   │   ├── article.ts             # Article-related types
-│   │   ├── category.ts            # Category types
-│   │   ├── tag.ts                 # Tag types
-│   │   └── api.ts                 # API response types
-│   │
-│   ├── hooks/                     # Custom React hooks
-│   │   ├── useArticles.ts         # Articles data fetching hook
-│   │   ├── useCategories.ts       # Categories data fetching hook
-│   │   ├── useTags.ts             # Tags data fetching hook
-│   │   ├── useDebounce.ts         # Debounce hook for search
-│   │   ├── useLocalStorage.ts     # Local storage hook
-│   │   └── usePagination.ts       # Pagination logic hook
-│   │
-│   ├── context/                   # React Context providers
-│   │   ├── FilterContext.tsx      # Filter state management
-│   │   ├── ThemeContext.tsx       # Theme management (if needed)
-│   │   └── AppContext.tsx         # Global app state
-│   │
-│   └── services/                  # Business logic & API services
-│       ├── wordpressService.ts    # WordPress API service
-│       ├── articleService.ts      # Article-specific operations
-│       ├── cacheService.ts        # Caching logic
-│       └── transform.ts           # Data transformation
-│
-├── public/                        # Static assets
-│   ├── images/
-│   │   ├── logo.svg
-│   │   ├── placeholder.jpg
-│   │   └── favicon.ico
-│   └── icons/
-│
-└── docs/                          # Documentation
-    ├── api-endpoints.md
-    ├── component-guide.md
-    └── deployment.md
+├── components.json
+├── public/
+│   ├── manifest.json
+│   └── sw.js
+└── src/
+    ├── app/
+    │   ├── layout.tsx
+    │   ├── page.tsx
+    │   ├── globals.css
+    │   ├── offline/page.tsx
+    │   └── search/page.tsx
+    ├── components/
+    │   ├── ui/                 # shadcn/ui components
+    │   ├── layout/             # Header, etc.
+    │   ├── articles/
+    │   ├── search/
+    │   ├── providers/          # Web3 providers
+    │   └── ServiceWorkerInitializer.tsx
+    ├── constants/              # API constants & helpers
+    ├── hooks/                  # useFilteredArticles, useCategories, ...
+    ├── lib/                    # web3.ts, utils
+    ├── services/               # wordpress.ts, transform.ts, mocks
+    ├── types/                  # article.ts, category.ts, tag.ts, wordpress.ts, api.ts
+    └── utils/                  # serviceWorker.ts, errorHandler.ts
 ```
 
 ## Component Architecture
@@ -215,10 +123,10 @@ interface AppState {
 
 ## Services & Data Layer
 
-### 1. WordPress API Service (`services/wordpressService.ts`)
+### 1. WordPress API Service (`src/services/wordpress.ts`)
 
 ```typescript
-class WordPressService {
+class WordPressApiService {
   private baseURL = "https://hypeya.xyz/wp-json/wp/v2";
 
   async getArticles(params: ArticleParams): Promise<Article[]>;
@@ -229,13 +137,7 @@ class WordPressService {
 }
 ```
 
-### 2. Cache Service (`services/cacheService.ts`)
-
-- Implements caching for API responses
-- Uses localStorage/sessionStorage for client-side caching
-- Cache invalidation strategies
-
-### 3. Transform Service (`services/transform.ts`)
+### 2. Transform Service (`src/services/transform.ts`)
 
 - Transforms WordPress API responses to app-specific format
 - Sanitizes HTML content
@@ -454,20 +356,20 @@ const transformArticle = (wpArticle: WordPressArticle): Article => ({
 
 ```bash
 npm install
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run type-check   # TypeScript checking
+npm run dev           # Start development server
+npm run build         # Build for production
+npm run start         # Start production server
+npm run lint          # Run ESLint
+npm run typecheck     # TypeScript checking
 ```
 
 ### 2. Environment Variables
 
 ```env
-NEXT_PUBLIC_WP_API_URL=https://hypeya.xyz/wp-json/wp/v2
-NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
-WP_AUTH_USER=username          # If authentication needed
-WP_AUTH_PASSWORD=password      # If authentication needed
+WP_API_USERNAME=your-wp-username          # Optional (Application Passwords)
+WP_API_KEY=your-wp-application-password   # Optional (Application Passwords)
+NEXT_PUBLIC_API_DEBUG=false               # Optional client-side debug logs
+NEXT_PUBLIC_OFFLINE_MODE=false            # Optional mock/offline mode
 ```
 
 ### 3. Production Deployment
@@ -534,4 +436,4 @@ WP_AUTH_PASSWORD=password      # If authentication needed
 - **RTL Support**: Right-to-left language support
 - **Localization**: Date and number formatting
 
-This architecture provides a solid foundation for building a modern, performant, and maintainable NextJS application that showcases articles from the Hypeya website with comprehensive filtering capabilities and an excellent user experience.
+Note: Earlier sections describe the conceptual architecture; the structure block above reflects the current code layout. This provides a solid foundation for a modern, performant, and maintainable Next.js application that showcases articles from the Hypeya website with comprehensive filtering, PWA support, and optional Web3 features.

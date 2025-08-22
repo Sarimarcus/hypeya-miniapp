@@ -39,8 +39,8 @@ export interface ArticleFilters {
   tags?: string[]; // Tag slugs
   search?: string;
   author?: string;
-  sortBy?: 'date' | 'title' | 'modified' | 'relevance';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "date" | "title" | "modified" | "relevance";
+  sortOrder?: "asc" | "desc";
   page?: number;
   perPage?: number;
 }
@@ -48,7 +48,7 @@ export interface ArticleFilters {
 // Search parameters
 export interface SearchParams {
   query: string;
-  type?: 'articles' | 'categories' | 'tags' | 'all';
+  type?: "articles" | "categories" | "tags" | "all";
   limit?: number;
 }
 
@@ -67,7 +67,7 @@ export interface CacheConfig {
 }
 
 // HTTP methods
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 // API endpoint configuration
 export interface ApiEndpoint {

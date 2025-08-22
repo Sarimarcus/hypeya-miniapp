@@ -11,7 +11,7 @@ export interface WordPressArticle {
   modified: string;
   modified_gmt: string;
   slug: string;
-  status: 'publish' | 'future' | 'draft' | 'pending' | 'private';
+  status: "publish" | "future" | "draft" | "pending" | "private";
   type: string;
   link: string;
   title: {
@@ -27,8 +27,8 @@ export interface WordPressArticle {
   };
   author: number;
   featured_media: number;
-  comment_status: 'open' | 'closed';
-  ping_status: 'open' | 'closed';
+  comment_status: "open" | "closed";
+  ping_status: "open" | "closed";
   sticky: boolean;
   template: string;
   format: string;
@@ -38,8 +38,8 @@ export interface WordPressArticle {
   class_list: string[];
   _embedded?: {
     author?: WordPressAuthor[];
-    'wp:featuredmedia'?: WordPressMedia[];
-    'wp:term'?: WordPressTerm[][];
+    "wp:featuredmedia"?: WordPressMedia[];
+    "wp:term"?: WordPressTerm[][];
   };
 }
 
@@ -50,7 +50,7 @@ export interface WordPressCategory {
   link: string;
   name: string;
   slug: string;
-  taxonomy: 'category';
+  taxonomy: "category";
   parent: number;
   meta: Record<string, unknown>;
 }
@@ -62,7 +62,7 @@ export interface WordPressTag {
   link: string;
   name: string;
   slug: string;
-  taxonomy: 'post_tag';
+  taxonomy: "post_tag";
   meta: Record<string, unknown>;
 }
 
@@ -85,14 +85,14 @@ export interface WordPressMedia {
   id: number;
   date: string;
   slug: string;
-  type: 'attachment';
+  type: "attachment";
   link: string;
   title: {
     rendered: string;
   };
   author: number;
-  comment_status: 'open' | 'closed';
-  ping_status: 'open' | 'closed';
+  comment_status: "open" | "closed";
+  ping_status: "open" | "closed";
   template: string;
   meta: Record<string, unknown>;
   description: {
@@ -102,7 +102,7 @@ export interface WordPressMedia {
     rendered: string;
   };
   alt_text: string;
-  media_type: 'image' | 'file';
+  media_type: "image" | "file";
   mime_type: string;
   media_details: {
     width: number;
@@ -142,7 +142,7 @@ export interface WordPressTerm {
   link: string;
   name: string;
   slug: string;
-  taxonomy: 'category' | 'post_tag';
+  taxonomy: "category" | "post_tag";
   parent?: number;
 }
 
@@ -150,14 +150,14 @@ export interface WordPressTerm {
 export interface WordPressApiResponse<T> {
   data: T;
   headers: {
-    'x-wp-total': string;
-    'x-wp-totalpages': string;
+    "x-wp-total": string;
+    "x-wp-totalpages": string;
   };
 }
 
 // Query parameter types
 export interface WordPressPostsQuery {
-  context?: 'view' | 'embed' | 'edit';
+  context?: "view" | "embed" | "edit";
   page?: number;
   per_page?: number;
   search?: string;
@@ -168,8 +168,18 @@ export interface WordPressPostsQuery {
   exclude?: number[];
   include?: number[];
   offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?: 'author' | 'date' | 'id' | 'include' | 'modified' | 'parent' | 'relevance' | 'slug' | 'include_slugs' | 'title';
+  order?: "asc" | "desc";
+  orderby?:
+    | "author"
+    | "date"
+    | "id"
+    | "include"
+    | "modified"
+    | "parent"
+    | "relevance"
+    | "slug"
+    | "include_slugs"
+    | "title";
   slug?: string[];
   status?: string[];
   categories?: number[];
@@ -181,14 +191,22 @@ export interface WordPressPostsQuery {
 }
 
 export interface WordPressCategoriesQuery {
-  context?: 'view' | 'embed' | 'edit';
+  context?: "view" | "embed" | "edit";
   page?: number;
   per_page?: number;
   search?: string;
   exclude?: number[];
   include?: number[];
-  order?: 'asc' | 'desc';
-  orderby?: 'id' | 'include' | 'name' | 'slug' | 'include_slugs' | 'term_group' | 'description' | 'count';
+  order?: "asc" | "desc";
+  orderby?:
+    | "id"
+    | "include"
+    | "name"
+    | "slug"
+    | "include_slugs"
+    | "term_group"
+    | "description"
+    | "count";
   hide_empty?: boolean;
   parent?: number;
   post?: number;
@@ -196,15 +214,23 @@ export interface WordPressCategoriesQuery {
 }
 
 export interface WordPressTagsQuery {
-  context?: 'view' | 'embed' | 'edit';
+  context?: "view" | "embed" | "edit";
   page?: number;
   per_page?: number;
   search?: string;
   exclude?: number[];
   include?: number[];
   offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?: 'id' | 'include' | 'name' | 'slug' | 'include_slugs' | 'term_group' | 'description' | 'count';
+  order?: "asc" | "desc";
+  orderby?:
+    | "id"
+    | "include"
+    | "name"
+    | "slug"
+    | "include_slugs"
+    | "term_group"
+    | "description"
+    | "count";
   hide_empty?: boolean;
   post?: number;
   slug?: string[];

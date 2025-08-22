@@ -1,9 +1,9 @@
 // Minimal performance utilities for image lazy loading
 // Only includes functions actually used by the app
 
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 // Simple lazy loading hook for images
 export function useLazyLoading(threshold = 0.1) {

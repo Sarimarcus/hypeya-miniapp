@@ -105,7 +105,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
     .filter(article => {
       // Category filter
       if (filters.categories.length > 0) {
-        const hasMatchingCategory = article.categories.some(cat => 
+        const hasMatchingCategory = article.categories.some(cat =>
           filters.categories.includes(cat.id)
         );
         if (!hasMatchingCategory) return false;
@@ -113,7 +113,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
 
       // Tag filter
       if (filters.tags.length > 0) {
-        const hasMatchingTag = article.tags.some(tag => 
+        const hasMatchingTag = article.tags.some(tag =>
           filters.tags.includes(tag.id)
         );
         if (!hasMatchingTag) return false;
@@ -123,7 +123,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
     })
     .sort((a, b) => {
       const multiplier = filters.sortOrder === 'asc' ? 1 : -1;
-      
+
       switch (filters.sortBy) {
         case 'date':
           return (a.publishedAt.getTime() - b.publishedAt.getTime()) * multiplier;
@@ -215,9 +215,9 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setFilters(prev => ({ 
-                            ...prev, 
-                            sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc' 
+                          setFilters(prev => ({
+                            ...prev,
+                            sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc'
                           }));
                         }}
                         className="ml-1 p-0 h-auto"
@@ -312,7 +312,7 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
           <div className="p-4">
             <div className="mb-4">
               <p className="text-gray-600">
-                {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''} 
+                {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''}
                 {query && ` for "${query}"`}
                 {hasActiveFilters && ' (filtered)'}
                 {filteredResults.length === 20 && ' (showing first 20 results)'}
@@ -322,8 +322,8 @@ export function AdvancedSearch({ onClose, initialQuery = '' }: AdvancedSearchPro
             {filteredResults.length > 0 ? (
               <div className="space-y-4">
                 {filteredResults.map((article) => (
-                  <ArticleCard 
-                    key={article.id} 
+                  <ArticleCard
+                    key={article.id}
                     article={article}
                     variant="compact"
                   />

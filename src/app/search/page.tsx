@@ -8,11 +8,11 @@ function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q') || '';
-  
+
   const handleClose = () => {
     router.back(); // Navigate back to previous page
   };
-  
+
   return <AdvancedSearch initialQuery={initialQuery} onClose={handleClose} />;
 }
 

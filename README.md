@@ -18,7 +18,7 @@ Hypeya Mini‑App is a mobile‑first Next.js application that fetches and displ
 
 ## Quick Start
 
-Prerequisites: Node.js 18.18+ (recommended: 20 LTS) and npm.
+Prerequisites: Node.js 20 LTS and npm. A `.nvmrc` (20) is included.
 
 1) Install dependencies
 
@@ -50,13 +50,16 @@ Open http://localhost:3000
 
 ## Scripts
 
-- `npm run dev`: Start dev server (Turbopack)
-- `npm run build`: Build production bundle (Turbopack)
+- `npm run dev`: Start dev server
+- `npm run dev:turbopack`: Start dev with Turbopack
+- `npm run build`: Build production bundle
+- `npm run build:turbopack`: Build with Turbopack
 - `npm run start`: Start production server
 - `npm run lint`: Run ESLint
-- `npm run build:analyze`: Build then analyze bundle size
+- `npm run typecheck`: TypeScript type checking
+- `npm run analyze`: Analyze bundle size (after a build)
 
-Bundle analysis uses `scripts/analyze-bundle.js` and prints page/chunk sizes and suggestions.
+Bundle analysis uses `scripts/analyze-bundle.js` and prints page/chunk sizes and suggestions. If you build with Turbopack, the analyzer degrades gracefully with a lighter report.
 
 ## Environment
 
@@ -75,7 +78,7 @@ Key directories under `src/`:
 - `types/`: Typed models for articles, categories, tags, API
 - `lib/` and `utils/`: Helpers (e.g., service worker, haptics, performance)
 
-See `architecture.md` for a deeper breakdown and `tasks.md` for implementation progress.
+See [architecture.md](docs/architecture.md) for a deeper breakdown and [tasks.md](docs/tasks.md) for implementation progress.
 
 ## Notable Routes
 
@@ -85,9 +88,14 @@ See `architecture.md` for a deeper breakdown and `tasks.md` for implementation p
 
 ## Development Notes
 
-- Accessibility: Work is in progress (see Phase 11 in `tasks.md`).
+- Accessibility: Work is in progress (see Phase 11 in [tasks.md](docs/tasks.md)).
 - Mobile‑first: Verify layouts in responsive mode (375px–430px).
 - API limits: Public endpoints are used; credentials can reduce rate‑limit issues.
+
+## Web3 Integration
+
+- OnchainKit + Wagmi + Viem integration added for Base network (wallet connect, smart wallets, and creator tipping scaffolding).
+- See [ONCHAINKIT_INTEGRATION.md](docs/ONCHAINKIT_INTEGRATION.md) for setup and required environment variables (`NEXT_PUBLIC_ONCHAINKIT_*`).
 
 ## Troubleshooting
 
@@ -98,3 +106,12 @@ See `architecture.md` for a deeper breakdown and `tasks.md` for implementation p
 ## License
 
 This project is for internal use and evaluation. Do not commit real credentials. If publishing, add a proper license file.
+
+## Docs Index
+
+- [architecture.md](docs/architecture.md): High‑level architecture and structure
+- [DEPLOYMENT.md](docs/DEPLOYMENT.md): Vercel deployment guide
+- [WORDPRESS_API_OPTIMIZATION.md](docs/WORDPRESS_API_OPTIMIZATION.md): `_embed` optimization summary
+- [EMBEDDED_DATA_FIX.md](docs/EMBEDDED_DATA_FIX.md): Embedded data extraction fixes
+- [ONCHAINKIT_INTEGRATION.md](docs/ONCHAINKIT_INTEGRATION.md): Web3 integration notes
+- [tasks.md](docs/tasks.md): Phased implementation log

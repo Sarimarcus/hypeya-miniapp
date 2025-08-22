@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     this.setState({
       error,
       errorInfo,
@@ -158,7 +158,7 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
 
               <div className="flex flex-col space-y-2">
-                <Button 
+                <Button
                   onClick={this.handleRetry}
                   className="w-full"
                   variant="default"
@@ -167,7 +167,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   Try Again
                 </Button>
 
-                <Button 
+                <Button
                   onClick={this.handleGoHome}
                   variant="outline"
                   className="w-full"
@@ -176,7 +176,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   Go to Home
                 </Button>
 
-                <Button 
+                <Button
                   onClick={this.handleReload}
                   variant="ghost"
                   className="w-full text-sm"

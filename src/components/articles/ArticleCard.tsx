@@ -7,6 +7,8 @@ import { Badge } from '../ui/badge';
 import { WordPressImage } from '@/components/common/OptimizedImage';
 import { cn } from '@/lib/utils';
 import { Article } from '@/types/article';
+import { TipCreator } from '@/components/web3';
+import { getValidatedAuthorWallet } from '@/utils/authorWallet';
 
 interface ArticleCardProps {
   article?: Article;
@@ -16,6 +18,7 @@ interface ArticleCardProps {
   showAuthor?: boolean;
   showCategory?: boolean;
   showTags?: boolean;
+  showTipCreator?: boolean;
   loading?: boolean;
 }
 
@@ -27,6 +30,7 @@ export function ArticleCard({
   showAuthor = true,
   showCategory = true,
   showTags = false,
+  showTipCreator = false,
   loading = false
 }: ArticleCardProps) {
   if (loading || !article) {
@@ -95,7 +99,7 @@ export function ArticleCard({
   };
 
   return (
-    <Card 
+    <Card
       className={cn(
         'cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
         'border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-hypeya-500 focus:ring-offset-2'
@@ -127,8 +131,8 @@ export function ArticleCard({
         {/* Category Badge */}
         {showCategory && article.categories.length > 0 && (
           <div className="mb-2">
-            <Badge 
-              variant="default" 
+            <Badge
+              variant="default"
               className="text-xs text-white"
               style={{ backgroundColor: '#6a40f2' }}
               aria-label={`Categoría: ${article.categories[0].name}`}
@@ -195,15 +199,26 @@ export function ArticleCard({
             )}
           </div>
         )}
+
+        {/* Tip Creator */}
+        {showTipCreator && article.author && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <TipCreator
+              authorName={article.author.name || 'Hypeya Team'}
+              authorAddress={getValidatedAuthorWallet(article.author)}
+              className="justify-center"
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
 
 // Skeleton loader for article cards
-export function ArticleCardSkeleton({ 
+export function ArticleCardSkeleton({
   variant = 'default',
-  className 
+  className
 }: {
   variant?: 'default' | 'compact' | 'featured';
   className?: string;
@@ -259,10 +274,10 @@ export function ArticleCardSkeleton({
 }
 
 // Compact article card for lists
-export function CompactArticleCard({ 
-  article, 
+export function CompactArticleCard({
+  article,
   onClick,
-  className 
+  className
 }: {
   article: Article;
   onClick?: () => void;
@@ -281,10 +296,10 @@ export function CompactArticleCard({
 }
 
 // Featured article card for hero sections
-export function FeaturedArticleCard({ 
-  article, 
+export function FeaturedArticleCard({
+  article,
   onClick,
-  className 
+  className
 }: {
   article: Article;
   onClick?: () => void;
@@ -297,6 +312,7 @@ export function FeaturedArticleCard({
       variant="featured"
       showAuthor={true}
       showTags={true}
+      showTipCreator={true}
       className={className}
     />
   );

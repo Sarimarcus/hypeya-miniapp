@@ -166,6 +166,28 @@ button, [role="button"], input, select, textarea {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* OnchainKit button styling */
+  --ock-bg-primary: #6a40f2;
+  --ock-bg-primary-hover: #5832d4;
+  --ock-bg-primary-active: #4c2bb6;
+  --ock-bg-secondary: #f3f4f6;
+  --ock-bg-secondary-hover: #e5e7eb;
+  --ock-bg-secondary-active: #d1d5db;
+  --ock-text-inverse: #ffffff;
+  --ock-text-foreground: #111827;
+  --ock-text-foreground-muted: #6b7280;
+  --ock-border-radius: 0.5rem;
+  --ock-font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.dark {
+  /* OnchainKit dark mode styling */
+  --ock-bg-secondary: #374151;
+  --ock-bg-secondary-hover: #4b5563;
+  --ock-bg-secondary-active: #6b7280;
+  --ock-text-foreground: #f9fafb;
+  --ock-text-foreground-muted: #9ca3af;
 }
 
 @layer base {
@@ -188,5 +210,156 @@ button, [role="button"], input, select, textarea {
   }
   .font-content {
     font-family: var(--font-inter), system-ui, sans-serif;
+  }
+}
+
+/* OnchainKit Component Styling */
+/* Custom styling for wallet connect button */
+[data-testid="ockConnectButton"] {
+  background-color: var(--ock-bg-primary, #6a40f2) !important;
+  border-radius: var(--ock-border-radius, 0.5rem) !important;
+  font-family: var(--ock-font-family, var(--font-inter), system-ui, sans-serif) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  color: var(--ock-text-inverse, #ffffff) !important;
+  border: none !important;
+  padding: 0.75rem 1rem !important;
+  min-width: 140px !important;
+  height: 44px !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+[data-testid="ockConnectButton"]:hover {
+  background-color: var(--ock-bg-primary-hover, #5832d4) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06) !important;
+}
+
+[data-testid="ockConnectButton"]:active {
+  background-color: var(--ock-bg-primary-active, #4c2bb6) !important;
+  transform: translateY(0) !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+[data-testid="ockConnectButton"]:focus {
+  outline: 2px solid var(--ock-bg-primary, #6a40f2) !important;
+  outline-offset: 2px !important;
+}
+
+/* Style the text inside the button */
+[data-testid="ockConnectButton"] span {
+  color: var(--ock-text-inverse, #ffffff) !important;
+  font-weight: 500 !important;
+}
+
+/* Connected wallet button styling */
+[data-testid="ockConnectWallet_Connected"] {
+  background-color: var(--ock-bg-secondary, #f3f4f6) !important;
+  border-radius: var(--ock-border-radius, 0.5rem) !important;
+  font-family: var(--ock-font-family, var(--font-inter), system-ui, sans-serif) !important;
+  color: var(--ock-text-foreground, #111827) !important;
+  border: none !important;
+  padding: 0 !important;
+  height: 44px !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+[data-testid="ockConnectWallet_Connected"]:hover {
+  background-color: var(--ock-bg-secondary-hover, #e5e7eb) !important;
+}
+
+[data-testid="ockConnectWallet_Connected"]:active {
+  background-color: var(--ock-bg-secondary-active, #d1d5db) !important;
+}
+
+[data-testid="ockConnectWallet_Connected"]:focus {
+  outline: 2px solid var(--ock-bg-primary, #6a40f2) !important;
+  outline-offset: 2px !important;
+}
+
+/* Style the identity text */
+[data-testid="ockIdentity_Text"] {
+  color: var(--ock-text-foreground, #111827) !important;
+  font-family: var(--ock-font-family, var(--font-inter), system-ui, sans-serif) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+/* Style the ETH balance text */
+[data-testid="ockEthBalance"] {
+  color: var(--ock-text-foreground-muted, #6b7280) !important;
+  font-family: var(--ock-font-family, var(--font-inter), system-ui, sans-serif) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Style the avatar container */
+[data-testid="ockAvatar_ImageContainer"] {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+
+/* Icon color styling */
+.ock-icon-color-foreground {
+  fill: var(--ock-text-foreground-muted, #6b7280) !important;
+}
+
+/* OnchainKit Transaction Button Styling */
+[data-testid="ockTransactionButton_Button"] {
+  background: linear-gradient(135deg, #6a40f2 0%, #5832d4 100%) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  color: white !important;
+  font-family: var(--font-inter), system-ui, sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  height: 44px !important;
+  padding: 0 1.5rem !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 2px 4px rgba(106, 64, 242, 0.2) !important;
+}
+
+[data-testid="ockTransactionButton_Button"]:hover {
+  background: linear-gradient(135deg, #5832d4 0%, #4c2bb6 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(106, 64, 242, 0.3) !important;
+}
+
+[data-testid="ockTransactionButton_Button"]:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 4px rgba(106, 64, 242, 0.2) !important;
+}
+
+[data-testid="ockTransactionButton_Button"]:disabled {
+  background: #9ca3af !important;
+  transform: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+[data-testid="ockTransactionButton_Button"]:focus-visible {
+  outline: 2px solid #6a40f2 !important;
+  outline-offset: 2px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  [data-testid="ockConnectButton"] {
+    min-width: 120px !important;
+    padding: 0.625rem 0.875rem !important;
+    font-size: 0.8125rem !important;
+  }
+
+  [data-testid="ockConnectWallet_Connected"] {
+    padding: 0 !important;
+  }
+
+  [data-testid="ockTransactionButton_Button"] {
+    height: 40px !important;
+    font-size: 0.8125rem !important;
+    padding: 0 1.25rem !important;
   }
 }

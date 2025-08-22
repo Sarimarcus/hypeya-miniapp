@@ -3,6 +3,8 @@ import { Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerInitializer } from "@/components/ServiceWorkerInitializer";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+import DynamicWeb3Providers from "@/components/providers/DynamicWeb3Providers";
+import Header from "@/components/layout/Header";
 
 const fredoka = Fredoka({
   variable: "--font-fredoka",
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HYPEYA - Noticias y Innovación Tech", 
+    title: "HYPEYA - Noticias y Innovación Tech",
     description: "Mantente al día con lo último en tecnología, IA e innovación",
     images: ["/images/hypeya-logo.png"],
   },
@@ -87,10 +89,13 @@ export default function RootLayout({
         >
           Saltar al contenido principal
         </a>
-        
+
         <ErrorBoundary>
-          {children}
-          <ServiceWorkerInitializer />
+          <DynamicWeb3Providers>
+            <Header />
+            {children}
+            <ServiceWorkerInitializer />
+          </DynamicWeb3Providers>
         </ErrorBoundary>
       </body>
     </html>

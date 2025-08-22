@@ -12,11 +12,11 @@ interface SwipeableProps extends UseSwipeOptions {
   style?: React.CSSProperties;
 }
 
-export function Swipeable({ 
-  children, 
-  className, 
-  style, 
-  ...swipeOptions 
+export function Swipeable({
+  children,
+  className,
+  style,
+  ...swipeOptions
 }: SwipeableProps) {
   const { ref } = useSwipe<HTMLDivElement>(swipeOptions);
 

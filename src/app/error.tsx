@@ -69,7 +69,7 @@ export default function Error({
           )}
 
           <div className="flex flex-col space-y-2">
-            <Button 
+            <Button
               onClick={reset}
               className="w-full"
               variant="default"
@@ -78,7 +78,7 @@ export default function Error({
               Intentar de nuevo
             </Button>
 
-            <Button 
+            <Button
               onClick={handleGoHome}
               variant="outline"
               className="w-full"
@@ -87,7 +87,7 @@ export default function Error({
               Ir al inicio
             </Button>
 
-            <Button 
+            <Button
               onClick={handleReload}
               variant="ghost"
               className="w-full text-sm"

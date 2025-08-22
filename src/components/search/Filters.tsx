@@ -25,11 +25,11 @@ interface FiltersProps {
   compact?: boolean;
 }
 
-export function Filters({ 
-  filters, 
-  onFiltersChange, 
+export function Filters({
+  filters,
+  onFiltersChange,
   className,
-  compact = false 
+  compact = false
 }: FiltersProps) {
   const [showCategories, setShowCategories] = useState(!compact);
   const [showTags, setShowTags] = useState(false);
@@ -45,7 +45,7 @@ export function Filters({
     const newCategories = filters.categories.includes(categoryId)
       ? filters.categories.filter(id => id !== categoryId)
       : [...filters.categories, categoryId];
-    
+
     onFiltersChange({
       ...filters,
       categories: newCategories
@@ -56,7 +56,7 @@ export function Filters({
     const newTags = filters.tags.includes(tagId)
       ? filters.tags.filter(id => id !== tagId)
       : [...filters.tags, tagId];
-    
+
     onFiltersChange({
       ...filters,
       tags: newTags
@@ -83,12 +83,12 @@ export function Filters({
   };
 
   // Show limited items for compact view
-  const visibleCategories = showAllCategories || !compact 
-    ? categories 
+  const visibleCategories = showAllCategories || !compact
+    ? categories
     : categories.slice(0, 8);
-  
-  const visibleTags = showAllTags || !compact 
-    ? tags 
+
+  const visibleTags = showAllTags || !compact
+    ? tags
     : tags.slice(0, 12);
 
   return (
@@ -99,9 +99,9 @@ export function Filters({
           <Filter className="h-5 w-5 text-gray-600" aria-hidden="true" />
           <h3 className="font-medium text-gray-900">Filtros</h3>
           {hasActiveFilters && (
-            <Badge 
-              variant="default" 
-              className="text-xs text-white" 
+            <Badge
+              variant="default"
+              className="text-xs text-white"
               style={{ backgroundColor: '#6a40f2' }}
               aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
             >
@@ -109,7 +109,7 @@ export function Filters({
             </Badge>
           )}
         </div>
-        
+
         {hasActiveFilters && (
           <Button
             variant="ghost"
@@ -138,7 +138,7 @@ export function Filters({
               </div>
             </div>
           )}
-          
+
           {filters.tags.length > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-1">Etiquetas:</p>
@@ -167,9 +167,9 @@ export function Filters({
           {compact && (
             <div className="flex items-center gap-2">
               {filters.categories.length > 0 && (
-                <Badge 
-                  variant="default" 
-                  className="text-xs text-white" 
+                <Badge
+                  variant="default"
+                  className="text-xs text-white"
                   style={{ backgroundColor: '#6a40f2' }}
                   aria-label={`${filters.categories.length} categorías seleccionadas`}
                 >
@@ -186,7 +186,7 @@ export function Filters({
         </button>
 
         {showCategories && (
-          <div 
+          <div
             id="categories-content"
             className="mt-3 space-y-3"
             role="group"
@@ -207,20 +207,20 @@ export function Filters({
                     />
                   ))}
                 </div>
-                
+
                 {compact && categories.length > 8 && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowAllCategories(!showAllCategories)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
-                    aria-label={showAllCategories 
-                      ? 'Ver menos categorías' 
+                    aria-label={showAllCategories
+                      ? 'Ver menos categorías'
                       : `Ver ${categories.length - 8} categorías más`
                     }
                   >
-                    {showAllCategories 
-                      ? 'Ver menos' 
+                    {showAllCategories
+                      ? 'Ver menos'
                       : `Ver ${categories.length - 8} más`
                     }
                   </Button>
@@ -243,9 +243,9 @@ export function Filters({
           <h4 className="font-medium text-gray-900">Etiquetas</h4>
           <div className="flex items-center gap-2">
             {filters.tags.length > 0 && (
-              <Badge 
-                variant="default" 
-                className="text-xs text-white" 
+              <Badge
+                variant="default"
+                className="text-xs text-white"
                 style={{ backgroundColor: '#6a40f2' }}
                 aria-label={`${filters.tags.length} etiquetas seleccionadas`}
               >
@@ -261,7 +261,7 @@ export function Filters({
         </button>
 
         {showTags && (
-          <div 
+          <div
             id="tags-content"
             className="mt-3 space-y-3"
             role="group"
@@ -282,20 +282,20 @@ export function Filters({
                     />
                   ))}
                 </div>
-                
+
                 {tags.length > 12 && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowAllTags(!showAllTags)}
                     className="text-blue-600 hover:text-blue-700 p-0 h-auto font-normal"
-                    aria-label={showAllTags 
-                      ? 'Ver menos etiquetas' 
+                    aria-label={showAllTags
+                      ? 'Ver menos etiquetas'
                       : `Ver ${tags.length - 12} etiquetas más`
                     }
                   >
-                    {showAllTags 
-                      ? 'Ver menos' 
+                    {showAllTags
+                      ? 'Ver menos'
                       : `Ver ${tags.length - 12} más`
                     }
                   </Button>

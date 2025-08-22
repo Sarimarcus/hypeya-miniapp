@@ -11,14 +11,14 @@ export function withErrorBoundary<P extends object>(
 ) {
   const WrappedComponent = function(props: P) {
     const FallbackComponent = fallback;
-    
+
     return (
       <ErrorBoundary
         fallback={
           FallbackComponent ? (
-            <FallbackComponent 
-              error={new Error('Component error')} 
-              retry={() => window.location.reload()} 
+            <FallbackComponent
+              error={new Error('Component error')}
+              retry={() => window.location.reload()}
             />
           ) : undefined
         }
@@ -26,7 +26,7 @@ export function withErrorBoundary<P extends object>(
           errorHandler.logError(error, {
             component: Component.displayName || Component.name || 'Unknown',
             action: 'component_error',
-            metadata: { 
+            metadata: {
               props: props as Record<string, unknown>,
               componentStack: errorInfo.componentStack
             }
@@ -39,7 +39,7 @@ export function withErrorBoundary<P extends object>(
   };
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-  
+
   return WrappedComponent;
 }
 
@@ -47,10 +47,10 @@ export function withErrorBoundary<P extends object>(
 export const SafeComponent = withErrorBoundary;
 
 // Error boundary specifically for async components
-export function AsyncErrorBoundary({ 
-  children, 
-  fallback 
-}: { 
+export function AsyncErrorBoundary({
+  children,
+  fallback
+}: {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) {

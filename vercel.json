@@ -1,75 +1,75 @@
 {
-  "version": 2,
-  "functions": {
-    "src/app/**": {
-      "maxDuration": 10
-    }
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "origin-when-cross-origin"
+    "version": 2,
+    "functions": {
+        "src/app/**": {
+            "maxDuration": 10
         }
-      ]
     },
-    {
-      "source": "/sw.js",
-      "headers": [
+    "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "1; mode=block"
+                },
+                {
+                    "key": "Referrer-Policy",
+                    "value": "origin-when-cross-origin"
+                }
+            ]
         },
         {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
-      ]
-    },
-    {
-      "source": "/images/(.*)",
-      "headers": [
+            "source": "/sw.js",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=0, must-revalidate"
+                },
+                {
+                    "key": "Service-Worker-Allowed",
+                    "value": "/"
+                }
+            ]
+        },
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/_next/static/(.*)",
-      "headers": [
+            "source": "/images/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
+        },
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+            "source": "/_next/static/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/admin",
-      "destination": "https://hypeya.xyz/wp-admin",
-      "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/wp/(.*)",
-      "destination": "https://hypeya.xyz/wp-json/wp/v2/$1"
-    }
-  ]
+    ],
+    "redirects": [
+        {
+            "source": "/admin",
+            "destination": "https://hypeya.xyz/wp-admin",
+            "permanent": true
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/api/wp/(.*)",
+            "destination": "https://hypeya.xyz/wp-json/wp/v2/$1"
+        }
+    ]
 }

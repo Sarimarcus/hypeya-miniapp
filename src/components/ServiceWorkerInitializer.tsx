@@ -22,7 +22,7 @@ export function ServiceWorkerInitializer() {
       const timer = setTimeout(() => {
         setShowOfflineMessage(true);
       }, 2000); // Wait 2 seconds before showing offline message
-      
+
       return () => clearTimeout(timer);
     } else {
       setShowOfflineMessage(false);

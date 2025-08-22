@@ -68,9 +68,9 @@ export function OptimizedImage({
   const shouldLoad = !lazy || priority || isVisible;
 
   // Generate responsive sizes if not provided
-  const responsiveSizes = sizes || (fill 
-    ? '100vw' 
-    : width 
+  const responsiveSizes = sizes || (fill
+    ? '100vw'
+    : width
       ? `(max-width: 768px) 100vw, (max-width: 1200px) 50vw, ${width}px`
       : '100vw'
   );
@@ -131,7 +131,7 @@ export function OptimizedImage({
         />
       ) : (
         // Lazy loading placeholder
-        <div 
+        <div
           className={cn(
             'w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse',
             'flex items-center justify-center'

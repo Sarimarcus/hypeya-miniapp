@@ -27,7 +27,7 @@ export function ErrorMessage({
   retryText = 'Intentar de nuevo'
 }: ErrorMessageProps) {
   const baseClasses = 'flex flex-col items-center text-center';
-  
+
   const variantClasses = {
     default: 'p-6 rounded-lg border border-red-200 bg-red-50',
     inline: 'p-4 rounded-md border border-red-200 bg-red-50',
@@ -91,7 +91,7 @@ export function ErrorMessage({
             {retryText}
           </Button>
         )}
-        
+
         {onDismiss && variant !== 'toast' && (
           <Button
             onClick={onDismiss}
@@ -107,10 +107,10 @@ export function ErrorMessage({
 }
 
 // Simplified error message for inline use
-export function InlineError({ 
-  message, 
+export function InlineError({
+  message,
   onRetry,
-  className 
+  className
 }: {
   message: string;
   onRetry?: () => void;
@@ -125,7 +125,7 @@ export function InlineError({
         <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
         <span className="text-sm text-red-700">{message}</span>
       </div>
-      
+
       {onRetry && (
         <Button
           onClick={onRetry}
@@ -141,9 +141,9 @@ export function InlineError({
 }
 
 // Network error specific component
-export function NetworkError({ 
+export function NetworkError({
   onRetry,
-  className 
+  className
 }: {
   onRetry?: () => void;
   className?: string;
@@ -159,11 +159,11 @@ export function NetworkError({
   );
 }
 
-// Not found error component  
-export function NotFoundError({ 
+// Not found error component
+export function NotFoundError({
   type = "content",
   onGoBack,
-  className 
+  className
 }: {
   type?: string;
   onGoBack?: () => void;
