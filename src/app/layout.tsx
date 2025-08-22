@@ -19,15 +19,15 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const URL = process.env.NEXT_PUBLIC_URL!;
-  const projectName = process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME!;
+  const URL = process.env.NEXT_PUBLIC_URL || "https://hypeya-miniapp.vercel.app";
+  const projectName = process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || "HYPEYA";
 
   return {
     title: {
       default: `${projectName} - Web3 Content Platform`,
       template: `%s | ${projectName}`
     },
-    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
+    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || "Web3 Content Platform",
     keywords: ["web3", "crypto", "content", "creators", "Base", "blockchain", "minikit"],
     authors: [{ name: "HYPEYA Team" }],
     creator: "HYPEYA",
@@ -37,8 +37,8 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "en_US",
       url: URL,
-      title: process.env.NEXT_PUBLIC_APP_OG_TITLE,
-      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION,
+      title: process.env.NEXT_PUBLIC_APP_OG_TITLE || `${projectName} - Web3 Content Platform`,
+      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION || "Web3 Content Platform",
       siteName: projectName,
       images: process.env.NEXT_PUBLIC_APP_OG_IMAGE ? [
         {
@@ -51,8 +51,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: process.env.NEXT_PUBLIC_APP_OG_TITLE,
-      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION,
+      title: process.env.NEXT_PUBLIC_APP_OG_TITLE || `${projectName} - Web3 Content Platform`,
+      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION || "Web3 Content Platform",
       images: process.env.NEXT_PUBLIC_APP_OG_IMAGE ? [process.env.NEXT_PUBLIC_APP_OG_IMAGE] : [],
     },
     robots: {
@@ -68,13 +68,13 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     manifest: "/manifest.json",
     icons: {
-      icon: process.env.NEXT_PUBLIC_APP_ICON,
-      apple: process.env.NEXT_PUBLIC_APP_ICON,
-      shortcut: process.env.NEXT_PUBLIC_APP_ICON,
+      icon: process.env.NEXT_PUBLIC_APP_ICON || "/favicon.ico",
+      apple: process.env.NEXT_PUBLIC_APP_ICON || "/favicon.ico",
+      shortcut: process.env.NEXT_PUBLIC_APP_ICON || "/favicon.ico",
     },
     category: "social",
     // Frame metadata for rich embeds and MiniKit integration
-    other: {
+    other: process.env.NEXT_PUBLIC_APP_HERO_IMAGE ? {
       'fc:frame': JSON.stringify({
         version: 'next',
         imageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
@@ -84,12 +84,12 @@ export async function generateMetadata(): Promise<Metadata> {
             type: 'launch_frame',
             name: projectName,
             url: URL,
-            splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE,
-            splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
+            splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE || process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
+            splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR || "#000000",
           },
         },
       }),
-    },
+    } : {},
   };
 }
 
