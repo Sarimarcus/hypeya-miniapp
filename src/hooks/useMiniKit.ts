@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 declare global {
   interface Window {
     coinbaseWallet?: unknown;
-    minikit?: {
-      sdk?: {
-        actions?: {
-          ready: () => void;
-        };
+    minikit?: unknown;
+    // Extended window types for MiniKit
+    sdk?: {
+      actions?: {
+        ready?: () => void;
       };
     };
   }
@@ -54,37 +54,69 @@ export function useMiniKit() {
 }
 
 /**
+ * Hook to initialize MiniKit and call ready when appropriate
+ */
+export function useMiniKitReady() {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    // Simple approach: call ready using window.postMessage for MiniKit
+    const initializeMiniKit = () => {
+      try {
+        // Method 1: Use postMessage to communicate with parent (Coinbase Wallet)
+        if (typeof window !== "undefined" && window.parent !== window) {
+          window.parent.postMessage({ type: 'minikit_ready' }, '*');
+          console.log("MiniKit ready message sent via postMessage");
+        }
+
+        // Method 2: Try window-based ready functions
+        const readyFunctions = [
+          window.sdk?.actions?.ready,
+          (window as any).minikit?.ready, // eslint-disable-line @typescript-eslint/no-explicit-any
+          (window as any).coinbaseWallet?.ready // eslint-disable-line @typescript-eslint/no-explicit-any
+        ];
+
+        for (const readyFn of readyFunctions) {
+          if (typeof readyFn === 'function') {
+            try {
+              readyFn();
+              console.log("Window-based ready() called successfully");
+              setIsReady(true);
+              return;
+            } catch (err) {
+              console.warn("Failed to call window-based ready():", err);
+            }
+          }
+        }
+
+        // Method 3: Try to use document events
+        const readyEvent = new CustomEvent('minikit-ready');
+        document.dispatchEvent(readyEvent);
+        console.log("MiniKit ready event dispatched");
+        
+        setIsReady(true);
+      } catch (error) {
+        console.warn("Failed to initialize MiniKit ready():", error);
+      }
+    };
+
+    // Call immediately and with delays to ensure it's picked up
+    initializeMiniKit();
+    setTimeout(initializeMiniKit, 100);
+    setTimeout(initializeMiniKit, 500);
+    setTimeout(initializeMiniKit, 1000);
+  }, []);
+
+  return isReady;
+}
+
+/**
  * Hook to get MiniKit capabilities and API access
  * @returns object with MiniKit utilities and state
  */
 export function useMiniKitAPI() {
   const isMiniKit = useMiniKit();
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    if (isMiniKit && typeof window !== "undefined") {
-      // Wait for MiniKit to be fully loaded
-      const checkReady = () => {
-        const ready = !!(window.minikit || window.coinbaseWallet);
-        setIsReady(ready);
-
-        if (ready && window.minikit?.sdk?.actions?.ready) {
-          // Call ready to dismiss splash screen
-          try {
-            window.minikit.sdk.actions.ready();
-            console.log("MiniKit ready() called successfully");
-          } catch (error) {
-            console.warn("Failed to call MiniKit ready():", error);
-          }
-        } else if (!ready) {
-          // Retry after a short delay
-          setTimeout(checkReady, 100);
-        }
-      };
-
-      checkReady();
-    }
-  }, [isMiniKit]);
+  const isReady = useMiniKitReady();
 
   return {
     isMiniKit,

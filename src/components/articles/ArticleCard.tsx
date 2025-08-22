@@ -103,7 +103,7 @@ export function ArticleCard({
       className={cn(
         'cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
         'border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-hypeya-500 focus:ring-offset-2',
-        'overflow-hidden' // Add overflow hidden to card for full-width image
+        'overflow-hidden p-0' // Remove default padding and add overflow hidden
       )}
       onClick={handleArticleClick}
       onKeyDown={(e) => {
@@ -237,7 +237,7 @@ export function ArticleCardSkeleton({
   };
 
   return (
-    <Card className={cn('border border-gray-200 bg-white overflow-hidden', className)}>
+    <Card className={cn('border border-gray-200 bg-white overflow-hidden p-0', className)}>
       {/* Image skeleton - Full width at top */}
       <div className={cn(
         'bg-gray-200 animate-pulse w-full',

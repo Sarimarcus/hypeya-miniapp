@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerInitializer } from "@/components/ServiceWorkerInitializer";
+import { MiniKitInitializer } from "@/components/MiniKitInitializer";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import DynamicWeb3Providers from "@/components/providers/DynamicWeb3Providers";
 import Header from "@/components/layout/Header";
@@ -114,6 +115,7 @@ export default function RootLayout({
 
         <ErrorBoundary>
           <DynamicWeb3Providers>
+            <MiniKitInitializer />
             <Header />
             {children}
             <ServiceWorkerInitializer />
