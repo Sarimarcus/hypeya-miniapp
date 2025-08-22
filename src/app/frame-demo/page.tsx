@@ -1,3 +1,5 @@
+'use client';
+
 import { MiniKitStatus } from '@/components/web3';
 
 export default function FrameMetadataDemo() {
@@ -38,7 +40,7 @@ export default function FrameMetadataDemo() {
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             📋 Frame Metadata Configuration
           </h2>
-          
+
           <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
             <pre className="text-sm text-gray-700">
               {JSON.stringify(frameMetadata, null, 2)}

@@ -27,22 +27,22 @@ echo "============================"
 if command -v curl >/dev/null 2>&1; then
     if curl -s -I http://localhost:3001 >/dev/null 2>&1; then
         echo "✅ Development server is running"
-        
+
         # Check if metadata is in the HTML
         HTML_CONTENT=$(curl -s http://localhost:3001 2>/dev/null || true)
-        
+
         if echo "$HTML_CONTENT" | grep -q "fc:frame"; then
             echo "✅ Frame metadata found in HTML!"
         else
             echo "⚠️  Frame metadata not detected in HTML"
         fi
-        
+
         if echo "$HTML_CONTENT" | grep -q "Launch ${NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME}"; then
             echo "✅ Launch button title configured correctly"
         else
             echo "⚠️  Launch button title not found"
         fi
-        
+
     else
         echo "⚠️  Development server not accessible at http://localhost:3001"
         echo "   Start with: npm run dev"
