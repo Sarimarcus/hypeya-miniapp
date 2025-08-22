@@ -25,10 +25,15 @@ class HapticFeedbackManager {
   private checkSupport(): boolean {
     // Check for iOS Haptic Feedback API
     if (typeof window !== "undefined") {
-      // @ts-expect-error - Haptic API is not in TypeScript definitions
+      // Check if DeviceMotionEvent exists and has requestPermission method
+      const DeviceMotion =
+        window.DeviceMotionEvent as typeof DeviceMotionEvent & {
+          requestPermission?: () => Promise<string>;
+        };
+
       return (
         "DeviceMotionEvent" in window &&
-        window.DeviceMotionEvent?.requestPermission !== undefined
+        typeof DeviceMotion?.requestPermission === "function"
       );
     }
     return false;
@@ -38,13 +43,20 @@ class HapticFeedbackManager {
     if (!this.isSupported) return false;
 
     try {
-      // @ts-expect-error - Haptic API is not in TypeScript definitions
-      const permission = await DeviceMotionEvent.requestPermission();
-      return permission === "granted";
+      // Type assertion for iOS DeviceMotionEvent with requestPermission
+      const DeviceMotion =
+        window.DeviceMotionEvent as typeof DeviceMotionEvent & {
+          requestPermission?: () => Promise<string>;
+        };
+
+      if (DeviceMotion.requestPermission) {
+        const permission = await DeviceMotion.requestPermission();
+        return permission === "granted";
+      }
     } catch (error) {
       console.warn("Haptic permission request failed:", error);
-      return false;
     }
+    return false;
   }
 
   private getVibrationPattern(type: HapticFeedbackType): number[] {
@@ -72,36 +84,37 @@ class HapticFeedbackManager {
     // Try iOS Haptic Feedback first
     if (this.isSupported) {
       try {
-        // @ts-expect-error - Haptic API is not in TypeScript definitions
-        if (window.Haptics) {
+        // Type assertion for iOS Haptics API
+        const windowWithHaptics = window as typeof window & {
+          Haptics?: {
+            impact: (options: { style: string }) => void;
+            notification: (options: { type: string }) => void;
+            selection: () => void;
+          };
+        };
+
+        if (windowWithHaptics.Haptics) {
           switch (type) {
             case "impact-light":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.impact({ style: "light" });
+              windowWithHaptics.Haptics.impact({ style: "light" });
               break;
             case "impact-medium":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.impact({ style: "medium" });
+              windowWithHaptics.Haptics.impact({ style: "medium" });
               break;
             case "impact-heavy":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.impact({ style: "heavy" });
+              windowWithHaptics.Haptics.impact({ style: "heavy" });
               break;
             case "notification-success":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.notification({ type: "success" });
+              windowWithHaptics.Haptics.notification({ type: "success" });
               break;
             case "notification-warning":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.notification({ type: "warning" });
+              windowWithHaptics.Haptics.notification({ type: "warning" });
               break;
             case "notification-error":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.notification({ type: "error" });
+              windowWithHaptics.Haptics.notification({ type: "error" });
               break;
             case "selection":
-              // @ts-expect-error - Haptic API is not in TypeScript definitions
-              window.Haptics.selection();
+              windowWithHaptics.Haptics.selection();
               break;
           }
           return;

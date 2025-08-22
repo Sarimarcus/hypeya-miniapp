@@ -18,58 +18,80 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "HYPEYA - Tech News & Innovation",
-    template: "%s | HYPEYA"
-  },
-  description: "Stay updated with the latest in technology, AI, and innovation. Discover cutting-edge articles, insights, and trends shaping the future.",
-  keywords: ["technology", "AI", "innovation", "tech news", "artificial intelligence", "startup", "digital transformation"],
-  authors: [{ name: "HYPEYA Team" }],
-  creator: "HYPEYA",
-  publisher: "HYPEYA",
-  metadataBase: new URL("https://hypeya.xyz"),
-  openGraph: {
-    type: "website",
-    locale: "es_ES",
-    url: "https://hypeya.xyz",
-    title: "HYPEYA - Tech News & Innovation",
-    description: "Stay updated with the latest in technology, AI, and innovation",
-    siteName: "HYPEYA",
-    images: [
-      {
-        url: "/images/hypeya-logo.png",
-        width: 1200,
-        height: 630,
-        alt: "HYPEYA - Tech News & Innovation",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "HYPEYA - Noticias y Innovación Tech",
-    description: "Mantente al día con lo último en tecnología, IA e innovación",
-    images: ["/images/hypeya-logo.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const URL = process.env.NEXT_PUBLIC_URL!;
+  const projectName = process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME!;
+  
+  return {
+    title: {
+      default: `${projectName} - Web3 Content Platform`,
+      template: `%s | ${projectName}`
+    },
+    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
+    keywords: ["web3", "crypto", "content", "creators", "Base", "blockchain", "minikit"],
+    authors: [{ name: "HYPEYA Team" }],
+    creator: "HYPEYA",
+    publisher: "HYPEYA",
+    metadataBase: new globalThis.URL(URL),
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: URL,
+      title: process.env.NEXT_PUBLIC_APP_OG_TITLE,
+      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION,
+      siteName: projectName,
+      images: process.env.NEXT_PUBLIC_APP_OG_IMAGE ? [
+        {
+          url: process.env.NEXT_PUBLIC_APP_OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: `${projectName} - Web3 Content Platform`,
+        },
+      ] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: process.env.NEXT_PUBLIC_APP_OG_TITLE,
+      description: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION,
+      images: process.env.NEXT_PUBLIC_APP_OG_IMAGE ? [process.env.NEXT_PUBLIC_APP_OG_IMAGE] : [],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/icon-192x192.png",
-    apple: "/icon-192x192.png",
-    shortcut: "/icon-192x192.png",
-  },
-  category: "technology",
-};
+    manifest: "/manifest.json",
+    icons: {
+      icon: process.env.NEXT_PUBLIC_APP_ICON,
+      apple: process.env.NEXT_PUBLIC_APP_ICON,
+      shortcut: process.env.NEXT_PUBLIC_APP_ICON,
+    },
+    category: "social",
+    // Frame metadata for rich embeds and MiniKit integration
+    other: {
+      'fc:frame': JSON.stringify({
+        version: 'next',
+        imageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
+        button: {
+          title: `Launch ${projectName}`,
+          action: {
+            type: 'launch_frame',
+            name: projectName,
+            url: URL,
+            splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE,
+            splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
+          },
+        },
+      }),
+    },
+  };
+}
 
 export default function RootLayout({
   children,

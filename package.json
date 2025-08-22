@@ -10,6 +10,8 @@
         "start": "next start",
         "lint": "eslint",
         "typecheck": "tsc -p tsconfig.json --noEmit",
+        "check-env": "./scripts/check-env.sh",
+        "check-frame": "./scripts/check-frame-metadata.sh",
         "analyze": "node scripts/analyze-bundle.js",
         "build:analyze": "npm run build:webpack && npm run analyze",
         "build:analyze:webpack": "npm run build:webpack && npm run analyze",

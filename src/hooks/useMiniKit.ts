@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // Type declarations for MiniKit detection
 declare global {
@@ -19,19 +19,24 @@ export function useMiniKit() {
 
   useEffect(() => {
     const checkMiniKit = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         // Check for MiniKit specific properties
         const hasWalletProvider = !!window.coinbaseWallet;
         const hasMiniKitContext = !!window.minikit;
         const userAgent = navigator.userAgent;
-        const isCoinbaseWallet = userAgent.includes('CoinbaseWallet');
-        
+        const isCoinbaseWallet = userAgent.includes("CoinbaseWallet");
+
         // Additional checks for MiniKit environment
         const hasParentOrigin = window.parent !== window;
-        const hasPostMessageAPI = typeof window.parent?.postMessage === 'function';
-        
-        return hasWalletProvider || hasMiniKitContext || isCoinbaseWallet || 
-               (hasParentOrigin && hasPostMessageAPI);
+        const hasPostMessageAPI =
+          typeof window.parent?.postMessage === "function";
+
+        return (
+          hasWalletProvider ||
+          hasMiniKitContext ||
+          isCoinbaseWallet ||
+          (hasParentOrigin && hasPostMessageAPI)
+        );
       }
       return false;
     };
@@ -48,22 +53,22 @@ export function useMiniKit() {
  */
 export function useMiniKitAPI() {
   const isMiniKit = useMiniKit();
-  
+
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (isMiniKit && typeof window !== 'undefined') {
+    if (isMiniKit && typeof window !== "undefined") {
       // Wait for MiniKit to be fully loaded
       const checkReady = () => {
         const ready = !!(window.minikit || window.coinbaseWallet);
         setIsReady(ready);
-        
+
         if (!ready) {
           // Retry after a short delay
           setTimeout(checkReady, 100);
         }
       };
-      
+
       checkReady();
     }
   }, [isMiniKit]);
@@ -71,7 +76,8 @@ export function useMiniKitAPI() {
   return {
     isMiniKit,
     isReady,
-    minikit: typeof window !== 'undefined' ? window.minikit : null,
-    coinbaseWallet: typeof window !== 'undefined' ? window.coinbaseWallet : null,
+    minikit: typeof window !== "undefined" ? window.minikit : null,
+    coinbaseWallet:
+      typeof window !== "undefined" ? window.coinbaseWallet : null,
   };
 }

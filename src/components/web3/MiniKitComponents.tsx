@@ -34,7 +34,7 @@ export function MiniKitStatus() {
           MiniKit Environment Detected
         </span>
       </div>
-      
+
       <div className="mt-2 space-y-1">
         <div className="flex items-center gap-2 text-xs">
           <span className="text-green-600">Status:</span>
@@ -42,14 +42,14 @@ export function MiniKitStatus() {
             {isReady ? 'Ready' : 'Loading...'}
           </span>
         </div>
-        
+
         <div className="flex items-center gap-2 text-xs">
           <span className="text-green-600">MiniKit API:</span>
           <span className={minikit ? 'text-green-700' : 'text-gray-500'}>
             {minikit ? 'Available' : 'Not detected'}
           </span>
         </div>
-        
+
         <div className="flex items-center gap-2 text-xs">
           <span className="text-green-600">Wallet API:</span>
           <span className={coinbaseWallet ? 'text-green-700' : 'text-gray-500'}>

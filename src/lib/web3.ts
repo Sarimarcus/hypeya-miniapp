@@ -39,6 +39,8 @@ export const onchainKitConfig = {
   apiKey: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,
   chain: mainChain,
   schemaId: process.env.NEXT_PUBLIC_ONCHAINKIT_SCHEMA_ID,
+  projectName: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || "HYPEYA",
+  appUrl: process.env.NEXT_PUBLIC_URL || "http://localhost:3000",
 };
 
 // Contract addresses (when we deploy contracts)

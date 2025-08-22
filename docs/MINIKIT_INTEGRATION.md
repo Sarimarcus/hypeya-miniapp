@@ -19,7 +19,7 @@ The app automatically detects the environment and uses the appropriate provider:
 
 ```tsx
 // Automatic detection and provider selection
-import { Web3Providers } from '@/components/web3';
+import { Web3Providers } from "@/components/web3";
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
 Use the `useMiniKit` hook to detect and respond to the MiniKit environment:
 
 ```tsx
-import { useMiniKit, useMiniKitAPI } from '@/hooks/useMiniKit';
+import { useMiniKit, useMiniKitAPI } from "@/hooks/useMiniKit";
 
 function MyComponent() {
   const isMiniKit = useMiniKit();
@@ -54,7 +54,7 @@ function MyComponent() {
 Display MiniKit status to users:
 
 ```tsx
-import { MiniKitStatus, MiniKitWalletConnect } from '@/components/web3';
+import { MiniKitStatus, MiniKitWalletConnect } from "@/components/web3";
 
 function Dashboard() {
   return (
@@ -140,6 +140,7 @@ Use `MiniKitStatus` component to see current environment details:
 ```
 
 This shows:
+
 - Environment type (MiniKit vs regular web)
 - API availability status
 - Connection readiness
@@ -164,6 +165,7 @@ Ensure your `manifest.json` supports MiniKit integration:
 ### URL Configuration
 
 MiniKit apps should work with both:
+
 - Direct web access: `https://yourdomain.com`
 - MiniKit integration: Embedded within Coinbase Wallet
 
