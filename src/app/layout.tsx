@@ -6,6 +6,7 @@ import { MiniKitInitializer } from "@/components/MiniKitInitializer";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import DynamicWeb3Providers from "@/components/providers/DynamicWeb3Providers";
 import Header from "@/components/layout/Header";
+import { Analytics } from "@vercel/analytics/next";
 
 const fredoka = Fredoka({
   variable: "--font-fredoka",
@@ -121,6 +122,7 @@ export default function RootLayout({
             <ServiceWorkerInitializer />
           </DynamicWeb3Providers>
         </ErrorBoundary>
+        <Analytics />
       </body>
     </html>
   );
