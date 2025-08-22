@@ -78,41 +78,40 @@ export default function HomePage() {
           <main id="main-content" className="container mx-auto px-4 py-8">
         {/* Hero Section with Search */}
         <section className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-title font-bold text-gray-900 mb-4">
-            Descubre la innovación tecnológica
-          </h1>
-          <p className="text-xl font-content text-gray-600 max-w-2xl mx-auto mb-6">
+          <p className="text-lg font-fredoka text-gray-600 max-w-2xl mx-auto mb-6">
             Descubre los últimos artículos, ideas e historias de nuestra comunidad
           </p>
 
-          {/* Prominent Search Bar */}
-          <div className="max-w-md mx-auto mb-4">
-            <SearchBar
-              onAdvancedSearch={handleAdvancedSearch}
-              placeholder="Buscar artículos..."
-            />
+          {/* Search Bar and Filters on Same Line */}
+          <div className="max-w-lg mx-auto mb-4 flex gap-3 items-center">
+            <div className="flex-1">
+              <SearchBar
+                onAdvancedSearch={handleAdvancedSearch}
+                placeholder="Buscar artículos..."
+              />
+            </div>
+            
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="border-hypeya-600 text-hypeya-600 hover:bg-hypeya-50 flex-shrink-0"
+              aria-expanded={showFilters}
+              aria-controls="filters-section"
+              aria-label={`${showFilters ? 'Ocultar' : 'Mostrar'} filtros de artículos`}
+            >
+              {showFilters ? 'Ocultar' : 'Filtros'}
+              {hasActiveFilters && (
+                <Badge
+                  variant="default"
+                  className="ml-2 text-white"
+                  style={{ backgroundColor: '#6a40f2' }}
+                  aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
+                >
+                  {filters.categories.length + filters.tags.length}
+                </Badge>
+              )}
+            </Button>
           </div>
-
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-            className="mb-4 border-hypeya-600 text-hypeya-600 hover:bg-hypeya-50"
-            aria-expanded={showFilters}
-            aria-controls="filters-section"
-            aria-label={`${showFilters ? 'Ocultar' : 'Mostrar'} filtros de artículos`}
-          >
-            {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
-            {hasActiveFilters && (
-              <Badge
-                variant="default"
-                className="ml-2 text-white"
-                style={{ backgroundColor: '#6a40f2' }}
-                aria-label={`${filters.categories.length + filters.tags.length} filtros activos`}
-              >
-                {filters.categories.length + filters.tags.length}
-              </Badge>
-            )}
-          </Button>
         </section>
 
         {/* Filters Panel */}
@@ -131,11 +130,11 @@ export default function HomePage() {
           <section className="mb-12">
             <h2 className="text-2xl font-title font-bold text-gray-900 mb-6">Explorar por categoría</h2>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filtros rápidos por categoría">
-              {categories.slice(0, 8).map((category) => (
+              {categories.slice(0, 4).map((category) => (
                 <Badge
                   key={category.id}
                   variant="default"
-                  className="cursor-pointer transition-colors text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 text-xs"
                   style={{ backgroundColor: '#6a40f2' }}
                   onClick={() => setFilters(prev => ({
                     ...prev,
@@ -158,9 +157,19 @@ export default function HomePage() {
                     }
                   }}
                 >
-                  {category.name} <span aria-hidden="true">({category.count})</span>
+                  {category.name}
                 </Badge>
               ))}
+              {categories.length > 4 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(true)}
+                  className="text-hypeya-600 hover:text-hypeya-700 text-xs h-6 px-2"
+                >
+                  +{categories.length - 4} más
+                </Button>
+              )}
             </div>
           </section>
         )}
