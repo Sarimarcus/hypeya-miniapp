@@ -11,7 +11,7 @@ import { WagmiProvider } from 'wagmi';
 import { ReactNode } from 'react';
 
 import { wagmiConfig, onchainKitConfig } from '@/lib/web3';
-import { useMiniKit, useMiniKitAPI } from '@/hooks/useMiniKit';
+import { useMiniKitAPI } from '@/hooks/useMiniKit';
 import { OnchainKitReady } from '@/components/OnchainKitReady';
 
 // Create a client for React Query (required by Wagmi)
@@ -29,39 +29,28 @@ interface Web3ProvidersProps {
 }
 
 export function Web3Providers({ children }: Web3ProvidersProps) {
-  const isMiniKit = useMiniKit();
-  // Initialize MiniKit API - this will call ready() when MiniKit is detected
+  // Initialize MiniKit API (safe on web and in MiniKit)
   useMiniKitAPI();
 
-  // If we're in MiniKit environment, use MiniKitProvider
-  if (isMiniKit) {
-    return (
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          <MiniKitProvider
+  // Always include MiniKitProvider so setFrameReady can be called
+  // Nest OnchainKitProvider for standard web features
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <MiniKitProvider
+          apiKey={onchainKitConfig.apiKey}
+          chain={onchainKitConfig.chain}
+          schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
+        >
+          <OnchainKitProvider
             apiKey={onchainKitConfig.apiKey}
             chain={onchainKitConfig.chain}
             schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
           >
             <OnchainKitReady />
             {children}
-          </MiniKitProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
-    );
-  }
-
-  // Otherwise, use regular OnchainKitProvider
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider
-          apiKey={onchainKitConfig.apiKey}
-          chain={onchainKitConfig.chain}
-          schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
-        >
-          {children}
-        </OnchainKitProvider>
+          </OnchainKitProvider>
+        </MiniKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
