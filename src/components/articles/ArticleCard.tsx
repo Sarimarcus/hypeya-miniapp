@@ -102,7 +102,8 @@ export function ArticleCard({
     <Card
       className={cn(
         'cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
-        'border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-hypeya-500 focus:ring-offset-2'
+        'border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-hypeya-500 focus:ring-offset-2',
+        'overflow-hidden' // Add overflow hidden to card for full-width image
       )}
       onClick={handleArticleClick}
       onKeyDown={(e) => {
@@ -115,19 +116,19 @@ export function ArticleCard({
       role="article"
       aria-label={`Leer artículo: ${article.title}`}
     >
-      <CardContent className={cardClasses[variant]}>
-        {/* Featured Image */}
-        {article.featuredImage && (
-          <div className={cn('mb-3 overflow-hidden rounded-lg relative', imageClasses[variant])}>
-            <WordPressImage
-              image={article.featuredImage}
-              className="transition-transform duration-300 hover:scale-105"
-              size="large"
-              aria-hidden="true"
-            />
-          </div>
-        )}
+      {/* Featured Image - Full width at top */}
+      {article.featuredImage && (
+        <div className={cn('relative w-full', imageClasses[variant])}>
+          <WordPressImage
+            image={article.featuredImage}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            size="large"
+            aria-hidden="true"
+          />
+        </div>
+      )}
 
+      <CardContent className={cardClasses[variant]}>
         {/* Category Badge */}
         {showCategory && article.categories.length > 0 && (
           <div className="mb-2">
@@ -236,14 +237,14 @@ export function ArticleCardSkeleton({
   };
 
   return (
-    <Card className={cn('border border-gray-200 bg-white', className)}>
-      <CardContent className={cardClasses[variant]}>
-        {/* Image skeleton */}
-        <div className={cn(
-          'mb-3 bg-gray-200 rounded-lg animate-pulse',
-          imageClasses[variant]
-        )} />
+    <Card className={cn('border border-gray-200 bg-white overflow-hidden', className)}>
+      {/* Image skeleton - Full width at top */}
+      <div className={cn(
+        'bg-gray-200 animate-pulse w-full',
+        imageClasses[variant]
+      )} />
 
+      <CardContent className={cardClasses[variant]}>
         {/* Category skeleton */}
         <div className="mb-2">
           <div className="w-16 h-5 bg-gray-200 rounded animate-pulse" />
