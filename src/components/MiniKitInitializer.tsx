@@ -7,15 +7,15 @@ import { useMiniKitReady } from '@/hooks/useMiniKit';
  * Should be included at the root level of the app
  */
 export function MiniKitInitializer() {
-  // This will automatically call setFrameReady() when the component mounts
-  const isReady = useMiniKitReady();
+    // This will automatically call setFrameReady() when the component mounts
+    const isReady = useMiniKitReady();
 
-  // Log ready status for debugging
-  if (typeof window !== 'undefined') {
-    console.log('🚀 MiniKit Initializer - Frame ready status:', isReady);
-  }
+    // Log ready status for debugging
+    if (typeof window !== 'undefined') {
+        console.log('🚀 MiniKit Initializer - Frame ready status:', isReady);
+    }
 
-  return null;
+    return null;
 }
 
 export default MiniKitInitializer;

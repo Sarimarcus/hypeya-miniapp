@@ -8,24 +8,24 @@ import { useMiniKit } from '@coinbase/onchainkit/minikit';
  * This component is only rendered within MiniKitProvider context
  */
 export function OnchainKitReady() {
-  const { setFrameReady, isFrameReady } = useMiniKit();
+    const { setFrameReady, isFrameReady } = useMiniKit();
 
-  useEffect(() => {
-    const callReady = async () => {
-      try {
-        if (!isFrameReady) {
-          await setFrameReady();
-          console.log("✅ OnchainKit setFrameReady() called successfully");
-        }
-      } catch (error) {
-        console.warn("❌ Failed to call OnchainKit setFrameReady():", error);
-      }
-    };
+    useEffect(() => {
+        const callReady = async () => {
+            try {
+                if (!isFrameReady) {
+                    await setFrameReady();
+                    console.log("✅ OnchainKit setFrameReady() called successfully");
+                }
+            } catch (error) {
+                console.warn("❌ Failed to call OnchainKit setFrameReady():", error);
+            }
+        };
 
-    callReady();
-  }, [setFrameReady, isFrameReady]);
+        callReady();
+    }, [setFrameReady, isFrameReady]);
 
-  return null;
+    return null;
 }
 
 export default OnchainKitReady;

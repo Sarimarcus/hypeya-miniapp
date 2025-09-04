@@ -16,44 +16,44 @@ import { OnchainKitReady } from '@/components/OnchainKitReady';
 
 // Create a client for React Query (required by Wagmi)
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      retry: 2,
+    defaultOptions: {
+        queries: {
+            staleTime: 60 * 1000, // 1 minute
+            retry: 2,
+        },
     },
-  },
 });
 
 interface Web3ProvidersProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export function Web3Providers({ children }: Web3ProvidersProps) {
-  // Initialize MiniKit API (safe on web and in MiniKit)
-  useMiniKitAPI();
+    // Initialize MiniKit API (safe on web and in MiniKit)
+    useMiniKitAPI();
 
-  // Always include MiniKitProvider so setFrameReady can be called
-  // Nest OnchainKitProvider for standard web features
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <MiniKitProvider
-          apiKey={onchainKitConfig.apiKey}
-          chain={onchainKitConfig.chain}
-          schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
-        >
-          <OnchainKitProvider
-            apiKey={onchainKitConfig.apiKey}
-            chain={onchainKitConfig.chain}
-            schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
-          >
-            <OnchainKitReady />
-            {children}
-          </OnchainKitProvider>
-        </MiniKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
+    // Always include MiniKitProvider so setFrameReady can be called
+    // Nest OnchainKitProvider for standard web features
+    return (
+        <WagmiProvider config={wagmiConfig}>
+            <QueryClientProvider client={queryClient}>
+                <MiniKitProvider
+                    apiKey={onchainKitConfig.apiKey}
+                    chain={onchainKitConfig.chain}
+                    schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
+                >
+                    <OnchainKitProvider
+                        apiKey={onchainKitConfig.apiKey}
+                        chain={onchainKitConfig.chain}
+                        schemaId={onchainKitConfig.schemaId as `0x${string}` | undefined}
+                    >
+                        <OnchainKitReady />
+                        {children}
+                    </OnchainKitProvider>
+                </MiniKitProvider>
+            </QueryClientProvider>
+        </WagmiProvider>
+    );
 }
 
 export default Web3Providers;

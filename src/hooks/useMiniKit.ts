@@ -33,7 +33,7 @@ export function useMiniKit() {
  */
 export function useMiniKitReady() {
   const [isReady, setIsReady] = useState(false);
-  
+
   useEffect(() => {
     const callReady = async () => {
       try {
@@ -47,7 +47,7 @@ export function useMiniKitReady() {
           } catch (error) {
             console.warn("OnchainKit MiniKit not available:", error);
           }
-          
+
           setIsReady(true);
           console.log("✅ MiniKit ready status set");
         }
