@@ -1,4 +1,4 @@
-¡HYPEYA! Mini‑App is a mobile‑first Next.js application that fetches and displays the latest articles from the ¡HYPEYA! (`https://hypeya.xyz`) WordPress site. It includes advanced search and filtering (categories/tags), optimized mobile UX (gestures, haptics), and PWA support with offline fallback.
+¡HYPEYA! Mini‑App is a mobile‑first Next.js application that fetches and displays the latest articles from the [¡HYPEYA!](https://hypeya.xyz) WordPress site. It includes advanced search and filtering (categories/tags), optimized mobile UX (gestures, haptics), and PWA support with offline fallback.
 
 ## Features
 
