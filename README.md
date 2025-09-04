@@ -1,4 +1,4 @@
-Hypeya Mini‑App is a mobile‑first Next.js application that fetches and displays the latest articles from the Hypeya.xyz WordPress site. It includes advanced search and filtering (categories/tags), optimized mobile UX (gestures, haptics), and PWA support with offline fallback.
+¡HYPEYA! Mini‑App is a mobile‑first Next.js application that fetches and displays the latest articles from the ¡HYPEYA! (`https://hypeya.xyz`) WordPress site. It includes advanced search and filtering (categories/tags), optimized mobile UX (gestures, haptics), and PWA support with offline fallback.
 
 ## Features
 
@@ -20,13 +20,13 @@ Hypeya Mini‑App is a mobile‑first Next.js application that fetches and displ
 
 Prerequisites: Node.js 20 LTS and npm. A `.nvmrc` (20) is included.
 
-1) Install dependencies
+1. Install dependencies
 
 ```bash
 npm install
 ```
 
-2) Configure environment variables
+2. Configure environment variables
 
 Create a `.env.local` from the example and fill values as needed:
 
@@ -40,7 +40,7 @@ Environment variables:
 - `NEXT_PUBLIC_API_DEBUG` enables extra client‑side logging.
 - `NEXT_PUBLIC_OFFLINE_MODE` simulates offline behavior in development.
 
-3) Run the dev server
+3. Run the dev server
 
 ```bash
 npm run dev
