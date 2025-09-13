@@ -12,6 +12,7 @@ import {
 import { Article } from "@/types/article";
 import { Category } from "@/types/category";
 import { Tag } from "@/types/tag";
+import { decodeHtmlEntities } from "@/utils/htmlDecoder";
 
 export class TransformService {
   /**
@@ -214,7 +215,7 @@ export class TransformService {
   static transformCategory(wpCategory: WordPressCategory): Category {
     return {
       id: wpCategory.id,
-      name: wpCategory.name || "Uncategorized",
+      name: decodeHtmlEntities(wpCategory.name || "Uncategorized"),
       slug: wpCategory.slug || "uncategorized",
       description: this.sanitizeHtml(wpCategory.description || ""),
       count: wpCategory.count || 0,
@@ -228,7 +229,7 @@ export class TransformService {
   static transformTag(wpTag: WordPressTag): Tag {
     return {
       id: wpTag.id,
-      name: wpTag.name || "Unknown Tag",
+      name: decodeHtmlEntities(wpTag.name || "Unknown Tag"),
       slug: wpTag.slug || "unknown",
       description: this.sanitizeHtml(wpTag.description || ""),
       count: wpTag.count || 0,
@@ -241,7 +242,7 @@ export class TransformService {
   static transformCategoryFromTerm(wpTerm: WordPressTerm): Category {
     return {
       id: wpTerm.id,
-      name: wpTerm.name || "Uncategorized",
+      name: decodeHtmlEntities(wpTerm.name || "Uncategorized"),
       slug: wpTerm.slug || "uncategorized",
       description: "",
       count: 0,
@@ -255,7 +256,7 @@ export class TransformService {
   static transformTagFromTerm(wpTerm: WordPressTerm): Tag {
     return {
       id: wpTerm.id,
-      name: wpTerm.name || "Unknown Tag",
+      name: decodeHtmlEntities(wpTerm.name || "Unknown Tag"),
       slug: wpTerm.slug || "unknown",
       description: "",
       count: 0,
@@ -269,17 +270,14 @@ export class TransformService {
     if (!html) return "";
 
     // Remove HTML tags but preserve line breaks
-    return html
+    const withoutTags = html
       .replace(/<br\s*\/?>/gi, "\n")
       .replace(/<\/p>/gi, "\n\n")
       .replace(/<[^>]*>/g, "")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'")
       .trim();
+
+    // Decode all HTML entities using the comprehensive decoder
+    return decodeHtmlEntities(withoutTags);
   }
 
   /**
@@ -288,16 +286,9 @@ export class TransformService {
   static sanitizeContent(html: string): string {
     if (!html) return "";
 
-    // For now, we'll return the raw HTML as the components will handle rendering
+    // For now, we'll return the HTML with decoded entities
     // In a production app, you might want to use a proper HTML sanitizer like DOMPurify
-    return html
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'")
-      .trim();
+    return decodeHtmlEntities(html.trim());
   }
 
   /**

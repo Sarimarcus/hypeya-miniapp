@@ -154,27 +154,14 @@ export class WordPressApiService {
    * Transform WordPress category to application category format
    */
   private transformCategory(wpCategory: WordPressCategory): Category {
-    return {
-      id: wpCategory.id,
-      name: wpCategory.name,
-      slug: wpCategory.slug,
-      description: wpCategory.description || "",
-      count: wpCategory.count || 0,
-      color: "#3B82F6", // Default color, can be customized
-    };
+    return TransformService.transformCategory(wpCategory);
   }
 
   /**
    * Transform WordPress tag to application tag format
    */
   private transformTag(wpTag: WordPressTag): Tag {
-    return {
-      id: wpTag.id,
-      name: wpTag.name,
-      slug: wpTag.slug,
-      description: wpTag.description || "",
-      count: wpTag.count || 0,
-    };
+    return TransformService.transformTag(wpTag);
   }
 
   /**
